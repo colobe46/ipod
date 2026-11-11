@@ -28,15 +28,13 @@ Podimo y tus favoritos), una rueda para moverte y unos pocos botones. Sin App St
 |---|---|
 | Girar el dedo (vueltas completas si quieres) | Sube o baja por la lista; al llegar al final vuelve al principio |
 | **OK** (centro), un toque | Abre lo seleccionado |
-| **menú** (arriba), doble toque | Abre los ajustes |
-| **❙◀︎◀︎ / ▶︎▶︎❙** (izquierda / derecha), doble toque | Canción anterior / siguiente (atajos, ver paso 3) |
-| **▶︎❙❙** (abajo), doble toque | Reproducir / pausar lo que esté sonando (atajo "Play Pausa") |
+| **menú** (arriba), doble toque | Abre el menú |
 
-Las opciones de la rueda solo actúan con **doble toque**: con el primero se iluminan y con el segundo se activan.
-Así no se disparan sin querer al girar. También puedes tocar directamente cualquier nombre de la lista.
+"menú" funciona con **doble toque** para que no se abra sin querer al girar. También puedes tocar directamente
+cualquier nombre de la lista.
 
 **Color de énfasis:** en ajustes, elige uno de los colores o cualquier otro con el selector.
-**Modo ahorro:** en ajustes, botón *Activar modo ahorro ahora* (o la automatización del paso 4).
+**Modo ahorro:** se activa solo con la automatización del paso 4.
 
 ### Temas (ajustes → Tema)
 - **Ámbar:** el diseño propio de la app (pantalla ámbar, rueda giratoria y botones). Encaja en cualquier iPhone.
@@ -47,12 +45,11 @@ Así no se disparan sin querer al girar. También puedes tocar directamente cual
   pantalla y la rueda táctil se coloca encima de la dibujada. Pulsa **Elegir foto** y escoge la imagen de tu carrete;
   se guarda solo en tu iPhone. Con este tema, la rueda dibujada funciona así:
 
-| Zona de la rueda | Un toque | Doble toque |
-|---|---|---|
-| Arriba | Ajustes | — |
-| Izquierda / derecha | Anterior / siguiente en la lista | Canción anterior / siguiente |
-| Abajo | Modo ahorro | Reproducir / pausar (atajo "Play Pausa") |
-| Centro | Abre lo seleccionado | — |
+| Zona de la rueda | Qué hace |
+|---|---|
+| Arriba | Abre el menú |
+| Izquierda / derecha | Anterior / siguiente en la lista |
+| Centro | Abre lo seleccionado |
 
 Para volver al diseño propio: doble toque en **menú** → **Ámbar** → Listo.
 
@@ -61,8 +58,8 @@ Primero aparece un menú con apartados; toca uno para entrar y **‹ Menú** par
 - **Mi lista:** cambiar, añadir o quitar botones. Pega tal cual un enlace copiado con *Compartir → Copiar enlace*
   (una lista de Spotify, un canal o vídeo de YouTube, un podcast de Podimo). **Restaurar** vuelve a los tres de siempre.
 - **Tema y colores:** Ámbar, Claro o Mi foto; color de énfasis (Ámbar) y color de fondo (Claro).
-- **Atajos:** el nombre exacto de cada atajo, solo si en la app Atajos les pusiste otro.
-- **Activar modo ahorro ahora** y **Ayuda** (este documento).
+- **Atajos:** botones para instalar los atajos y para qué sirve cada uno.
+- **Ayuda:** este documento.
 
 Los ajustes se guardan en el iPhone, separados de Safari: configúralos desde el icono de la app.
 
@@ -87,7 +84,7 @@ Toca cada enlace en el iPhone → **Añadir atajo**. No les cambies el nombre.
 Ábrelos en **Atajos → pestaña "Atajos" (abajo) → botón +**. *No* uses la pestaña "Automatización" para esto.
 Para renombrar: toca el nombre de arriba → **Renombrar**. Para añadir acciones: escríbelas en **"Buscar acciones"**.
 
-### "Modo iPod" (ajustes → Activar modo ahorro ahora; en el tema Mi foto, abajo en la rueda)
+### "Modo iPod" (se activa solo con la automatización del paso 4)
 | Acción | Valor | Para qué |
 |---|---|---|
 | Ajustar modo de bajo consumo | Activar | Es lo que más batería ahorra |
@@ -97,16 +94,19 @@ Para renombrar: toca el nombre de arriba → **Renombrar**. Para añadir accione
 | Ajustar brillo | 25 % | Menos gasto de pantalla |
 | Ajustar concentración | No molestar → Activar | Sin notificaciones que enciendan la pantalla |
 
-### "Play Pausa" (▶︎❙❙ en la rueda, doble toque)
-Una sola acción: **Reproducir/Pausar**. Pausa o reanuda lo que esté sonando. Si no estaba sonando nada,
-iOS puede reanudar la última app que usaste: es cosa de iOS, el atajo no puede saber si hay algo en marcha.
+### "Play Pausa"
+Una sola acción: **Reproducir/Pausar**.
 
-### "Siguiente" y "Anterior" (⏭ / ⏮ en la rueda, doble toque)
+### "Siguiente" y "Anterior"
 - **Siguiente:** una sola acción, **Saltar hacia delante**.
 - **Anterior:** una sola acción, **Saltar hacia atrás**.
 
-Controlan lo que esté sonando (Spotify, YouTube, Podimo…). Al usarlos se abre Atajos un momento y, a veces,
-iOS pregunta "¿Abrir en Atajos?": es una limitación de iOS, ninguna web puede controlar otra app directamente.
+Play Pausa, Siguiente y Anterior controlan lo que esté sonando (Spotify, YouTube, Podimo…). Úsalos con el
+**toque posterior**: Ajustes → Accesibilidad → Tocar → Toque posterior → por ejemplo **Doble toque → Play Pausa** y
+**Triple toque → Siguiente**.
+
+> La app no los lanza desde la rueda: en iOS 26, cuando una web o una app pide ejecutar un atajo, iOS abre la app
+> Atajos pero no lo ejecuta. Desde el toque posterior, el Centro de control o la propia app Atajos sí funcionan.
 
 ---
 
@@ -145,7 +145,7 @@ Concentración → +) que muestre solo esa página y actívala desde "Modo iPod"
 | No veo la versión nueva | Cierra la app desde el selector de apps y ábrela dos veces. Si sigue igual: Ajustes → Apps → Safari → Avanzado → Datos de sitios web → borra **github.io**. |
 | Sale la barra de Safari | Borra el icono y vuelve a añadirlo con **"Abrir como app web"** activado (paso 1). |
 | Al tocar una app se abre su web | Mantén pulsado el nombre → **Abrir en …** |
-| Sale el aviso rojo "No se pudo ejecutar el atajo…" | Ese atajo no existe o tiene otro nombre. Créalo (paso 3) con el nombre exacto que indica el aviso, o cambia el nombre en menú → Atajos. |
+| Un atajo solo abre la app Atajos y no hace nada | Es un fallo de iOS 26 al lanzarlos desde otra app. Úsalos con el toque posterior (paso 3). |
 | He borrado un botón sin querer | Ajustes → Añadir botón (o Restaurar). |
 | Con "Mi foto" la lista o la rueda no encajan | La imagen debe tener la pantalla arriba y la rueda abajo, con proporción parecida a la del iPhone. |
 | He perdido la foto de fondo | Se borra si borras el icono o los datos de Safari: vuelve a pulsar **Elegir foto**. |

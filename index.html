@@ -50,9 +50,6 @@
     pointer-events: none; transition: color .1s; }
   .op.armada { color: var(--ambar); }
   .op-arriba { top: 17%; left: 50%; transform: translateX(-50%); }
-  .op-abajo  { bottom: 17%; left: 50%; transform: translateX(-50%); font-size: 15px; }
-  .op-izq    { left: 13%; top: 50%; transform: translateY(-50%); font-size: 15px; letter-spacing: -1px; }
-  .op-der    { right: 13%; top: 50%; transform: translateY(-50%); font-size: 15px; letter-spacing: -1px; }
   body.tema-foto .op { display: none; }
 
 
@@ -143,13 +140,6 @@
   .tema.activo { border-color: var(--ambar) !important; color: var(--ambar) !important; }
   .ayuda { color: #8e8e93; font-size: 13px; line-height: 1.5; margin-top: 16px; }
 
-  #error-atajo { display: none; position: fixed; z-index: 5; left: 12px; right: 12px; top: calc(env(safe-area-inset-top) + 8px);
-    background: #2a1214; color: #fff; border: 1px solid #ff6b6b; border-radius: 12px; padding: 14px 16px;
-    font-size: 15px; line-height: 1.45; }
-  #error-atajo p { margin: 6px 0 12px; color: #f0d0d0; font-size: 14px; }
-  #error-atajo div { display: flex; gap: 10px; }
-  #error-atajo a, #error-atajo button { flex: 1; text-align: center; padding: 10px; border-radius: 8px; font-size: 15px;
-    border: 1px solid #ff6b6b; background: none; color: #fff; font-family: inherit; }
   #aviso-safari { display: none; position: fixed; z-index: 4; left: 12px; right: 12px; top: calc(env(safe-area-inset-top) + 8px);
     background: #1c1c1e; color: #fff; font-size: 14px; line-height: 1.45; padding: 12px 14px; border-radius: 10px;
     border: 1px solid #3a3a3c; }
@@ -162,14 +152,6 @@
   activa <b>Abrir como app web</b> → Añadir, y ábrela desde ese icono.
 </div>
 
-<div id="error-atajo" role="alert">
-  <b>No se pudo ejecutar el atajo «<span id="nombre-atajo"></span>».</b>
-  <p>Lo más probable es que no exista o tenga otro nombre. Créalo en la app Atajos con ese nombre exacto
-    (o cambia el nombre en menú → ajustes).</p>
-  <div><a id="instalar-falta" href="https://github.com/colobe46/ipod#3-crear-los-atajos-app-atajos">Ver cómo crearlo</a>
-    <button id="cerrar-error">Cerrar</button></div>
-</div>
-
 <section id="pantalla">
   <div id="barra"><span class="marca">MÚSICA</span><span id="hora">--:--</span></div>
   <main id="lista"></main>
@@ -178,9 +160,6 @@
 <div id="rueda" aria-label="Gira para moverte; toca el centro para abrir">
   <div id="disco"></div>
   <span class="op op-arriba">menú</span>
-  <span class="op op-izq">❙◀︎◀︎</span>
-  <span class="op op-der">▶︎▶︎❙</span>
-  <span class="op op-abajo">▶︎❙❙</span>
   <a id="centro" href="#">OK</a>
 </div>
 
@@ -195,12 +174,11 @@
     <nav class="secciones">
       <button data-ir="botones"><span>Mi lista</span><small>Spotify, YouTube, Podimo y favoritos</small></button>
       <button data-ir="aspecto"><span>Tema y colores</span><small>Ámbar, Claro o Mi foto</small></button>
-      <button data-ir="atajos"><span>Atajos</span><small>Ahorro, play/pausa, siguiente y anterior</small></button>
-      <button id="ahorro-ya"><span>Activar modo ahorro ahora</span><small>Ejecuta el atajo de ahorro</small></button>
+      <button data-ir="atajos"><span>Atajos</span><small>Instalar y usar con el toque posterior</small></button>
       <a href="https://github.com/colobe46/ipod#readme"><span>Ayuda</span><small>Instrucciones completas</small></a>
     </nav>
     <p class="ayuda">En la rueda: gira para moverte, toca el centro para abrir y haz <b>doble toque</b> en
-      menú, ❙◀︎◀︎, ▶︎❙❙ o ▶︎▶︎❙.</p>
+      "menú" para volver aquí.</p>
   </div>
 
   <div class="pagina" data-p="botones">
@@ -256,17 +234,12 @@
       <a href="https://www.icloud.com/shortcuts/6def905cf71d438f973a350ffb6a31b2"><span>Anterior</span><small>Instalar</small></a>
       <a href="https://www.icloud.com/shortcuts/90f79e1e5643489580a30c169d2c3427"><span>Play Pausa</span><small>Instalar</small></a>
     </nav>
-    <p class="ayuda">Toca uno, pulsa <b>Añadir atajo</b> y no le cambies el nombre. "Abrir iPod" es opcional:
-      sirve para abrir esta app con el doble toque en la parte de atrás del iPhone (ver Ayuda).</p>
-    <p class="ayuda">Si en la app Atajos les pusiste otro nombre, escríbelo aquí. Si alguno no existe, la app te avisará.</p>
-    <label for="atajo-modo">Atajo de ahorro</label>
-    <input id="atajo-modo" autocapitalize="off" autocorrect="off">
-    <label for="atajo-pp">Atajo reproducir / pausar</label>
-    <input id="atajo-pp" autocapitalize="off" autocorrect="off">
-    <label for="atajo-sig">Atajo canción siguiente</label>
-    <input id="atajo-sig" autocapitalize="off" autocorrect="off">
-    <label for="atajo-ant">Atajo canción anterior</label>
-    <input id="atajo-ant" autocapitalize="off" autocorrect="off">
+    <p class="ayuda">Toca uno y pulsa <b>Añadir atajo</b>.</p>
+    <p class="ayuda"><b>Modo iPod:</b> úsalo en una automatización para que se active solo al abrir Spotify, YouTube
+      o Podimo (Atajos → Automatización → App).</p>
+    <p class="ayuda"><b>Play Pausa, Siguiente y Anterior:</b> asígnalos al toque posterior (Ajustes → Accesibilidad →
+      Tocar → Toque posterior) para controlar la música con golpecitos en la parte de atrás del iPhone.</p>
+    <p class="ayuda"><b>Abrir iPod:</b> también para el toque posterior, si quieres abrir esta app así.</p>
   </div>
 </section>
 
@@ -304,12 +277,6 @@
   function guardar() { try { localStorage.setItem('ipod', JSON.stringify(cfg)); } catch (e) {} }
   var cfg = cargar();
 
-  // Si el atajo no existe (o falla), Atajos vuelve a esta página con ?falta=Nombre y se muestra un aviso.
-  function urlAtajo(nombre) {
-    var vuelta = location.origin + location.pathname + '?falta=' + encodeURIComponent(nombre);
-    return 'shortcuts://x-callback-url/run-shortcut?name=' + encodeURIComponent(nombre) +
-      '&x-error=' + encodeURIComponent(vuelta);
-  }
 
   // ---------- Lista ----------
   var sel = 0;
@@ -392,45 +359,23 @@
   }
   var SIMPLE = {
     menu: function () { abrirAjustes(); },
-    play: function () { location.href = urlAtajo(cfg.modo || DEF.modo); },
     sig:  function () { mover(1); },
     ant:  function () { mover(-1); }
   };
-  var DOBLE = {
-    menu: function () { abrirAjustes(); },
-    play: function () { location.href = urlAtajo(cfg.pp || DEF.pp); },
-    sig:  function () { location.href = urlAtajo(cfg.sig || DEF.sig); },
-    ant:  function () { location.href = urlAtajo(cfg.ant || DEF.ant); }
-  };
-  function tocarZona(zona) {
-    if (zona === 'menu') { if (pendiente) { clearTimeout(pendiente.timer); pendiente = null; } return abrirAjustes(); }
-    var ahora = Date.now();
-    if (pendiente && pendiente.zona === zona && ahora - pendiente.t < 350) {
-      clearTimeout(pendiente.timer); pendiente = null;
-      DOBLE[zona]();
-      return;
-    }
-    if (pendiente) { clearTimeout(pendiente.timer); SIMPLE[pendiente.zona](); }
-    pendiente = { zona: zona, t: ahora, timer: setTimeout(function () {
-      var z = pendiente.zona; pendiente = null; SIMPLE[z]();
-    }, 350) };
-  }
-  // Tema Ámbar: las opciones de la rueda solo actúan con doble toque
-  var CLASE_OP = { menu: 'op-arriba', play: 'op-abajo', sig: 'op-der', ant: 'op-izq' };
+  // Tema "Mi foto": arriba abre el menú; izquierda y derecha mueven la lista.
+  function tocarZona(zona) { if (SIMPLE[zona]) SIMPLE[zona](); }
+  // Temas Ámbar y Claro: "menú" se abre con doble toque (así no salta sin querer al girar).
   var armada = null;
   function tocarOpcion(zona) {
-    var ahora = Date.now();
-    var el = document.querySelector('.' + CLASE_OP[zona]);
-    if (armada && armada.zona === zona && ahora - armada.t < 400) {
-      clearTimeout(armada.timer); armada.el.classList.remove('armada'); armada = null;
-      DOBLE[zona]();
+    if (zona !== 'menu') return;
+    var el = document.querySelector('.op-arriba'), ahora = Date.now();
+    if (armada && ahora - armada.t < 400) {
+      clearTimeout(armada.timer); el.classList.remove('armada'); armada = null;
+      abrirAjustes();
       return;
     }
-    if (armada) { clearTimeout(armada.timer); armada.el.classList.remove('armada'); }
-    el.classList.add('armada');                    // se ilumina: "toca otra vez"
-    armada = { zona: zona, t: ahora, el: el, timer: setTimeout(function () {
-      el.classList.remove('armada'); armada = null;
-    }, 400) };
+    el.classList.add('armada');
+    armada = { t: ahora, timer: setTimeout(function () { el.classList.remove('armada'); armada = null; }, 400) };
   }
 
   rueda.addEventListener('pointerup', soltar);
@@ -469,10 +414,6 @@
     var f = $('filas');
     f.textContent = '';
     c.botones.forEach(function (b) { f.appendChild(fila(b)); });
-    $('atajo-modo').value = c.modo || DEF.modo;
-    $('atajo-pp').value = c.pp || DEF.pp;
-    $('atajo-sig').value = c.sig || DEF.sig;
-    $('atajo-ant').value = c.ant || DEF.ant;
   }
   var TITULOS = { inicio: 'Menú', botones: 'Mi lista', aspecto: 'Tema y colores', atajos: 'Atajos' };
   function irPagina(p) {
@@ -495,10 +436,6 @@
       return { n: d.querySelector('.n').value.trim(), u: d.querySelector('.u').value.trim() };
     }).filter(function (b) { return b.n && b.u; });
     if (!cfg.botones.length) cfg.botones = copia(DEF.botones);   // nunca dejar la lista vacía
-    cfg.modo = $('atajo-modo').value.trim() || DEF.modo;
-    cfg.pp = $('atajo-pp').value.trim() || DEF.pp;
-    cfg.sig = $('atajo-sig').value.trim() || DEF.sig;
-    cfg.ant = $('atajo-ant').value.trim() || DEF.ant;
     guardar();
     sel = 0;
     pintar();
@@ -536,7 +473,6 @@
   });
   $('fondo-libre').oninput = function () { cfg.fondo = this.value; guardar(); aplicarColor(); };
   $('color-libre').oninput = function () { cfg.color = this.value; guardar(); aplicarColor(); };
-  $('ahorro-ya').onclick = function () { location.href = urlAtajo(cfg.modo || DEF.modo); };
 
   // ---------- Temas ----------
   function fondoGuardado() { try { return localStorage.getItem('ipod-fondo'); } catch (e) { return null; } }
@@ -607,18 +543,7 @@
     img.src = url;
   };
 
-  // Aviso de atajo que falta
-  var falta = new URLSearchParams(location.search).get('falta');
-  if (falta) {
-    $('nombre-atajo').textContent = falta;
-    var ENLACES = {"Modo iPod": "https://www.icloud.com/shortcuts/9a1fe8f0be76423487fc017158e67729", "Abrir iPod": "https://www.icloud.com/shortcuts/11135d48c4d24c739f2167c03302dc7b", "Siguiente": "https://www.icloud.com/shortcuts/eb99e8e89d3d4df68795aa5d2d280ad7", "Anterior": "https://www.icloud.com/shortcuts/6def905cf71d438f973a350ffb6a31b2", "Play Pausa": "https://www.icloud.com/shortcuts/90f79e1e5643489580a30c169d2c3427"};
-    if (ENLACES[falta]) { $('instalar-falta').href = ENLACES[falta]; $('instalar-falta').textContent = 'Instalarlo'; }
-    $('error-atajo').style.display = 'block';
-    history.replaceState(null, '', location.pathname);
-  }
-  $('cerrar-error').onclick = function () { $('error-atajo').style.display = 'none'; };
-
-  if (navigator.standalone === false && !falta) $('aviso-safari').style.display = 'block';
+  if (navigator.standalone === false) $('aviso-safari').style.display = 'block';
   pintar();
   reloj();
   aplicarTema();
