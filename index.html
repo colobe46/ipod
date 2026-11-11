@@ -41,6 +41,8 @@
   body.con-fondo #reloj, body.con-fondo #lista a, body.con-fondo .et { text-shadow: 0 1px 4px rgba(0,0,0,.8); }
   body.con-fondo #fecha, body.con-fondo .et { color: #ddd; }
   body.con-fondo #lista a.sel { background: rgba(0,0,0,.5); }
+  body.con-fondo .et { visibility: hidden; }
+  body.con-fondo #rueda, body.con-fondo #centro { border-color: transparent; }
   body.sin-rueda #rueda, body.sin-rueda #centro { border-color: transparent; }
   body.sin-rueda .et { visibility: hidden; }
   body.sin-rueda #rueda.pulsado-centro #centro { background: rgba(255,255,255,.12); }
@@ -352,7 +354,7 @@
     c.botones.forEach(function (b) { f.appendChild(fila(b)); });
     $('atajo-modo').value = c.modo;
     $('dibujar-rueda').checked = c.rueda !== false;
-    $('encajar').checked = !!c.encajar;
+    $('encajar').checked = c.encajar !== false;
     $('tam-rueda').value = c.rTam || 74;
     $('sube-rueda').value = c.rSube || 0;
   }
@@ -388,7 +390,7 @@
     document.body.classList.toggle('con-fondo', !!f);
     document.body.style.backgroundImage = f ? 'url(' + f + ')' : '';
     document.body.classList.toggle('sin-rueda', cfg.rueda === false);
-    document.body.classList.toggle('encajar', !!(f && cfg.encajar));
+    document.body.classList.toggle('encajar', !!(f && cfg.encajar !== false));
     var r = $('rueda').style;
     if (cfg.rTam) r.setProperty('--tam', cfg.rTam + 'vw'); else r.removeProperty('--tam');
     r.setProperty('--sube', (cfg.rSube || 0) + 'px');
@@ -416,6 +418,7 @@
         try { localStorage.setItem('ipod-fondo', c.toDataURL('image/jpeg', calidades[i])); guardado = true; } catch (e) {}
       }
       if (!guardado) alertaFondo();
+      else { cfg.encajar = true; $('encajar').checked = true; guardar(); }
       aplicarAspecto();
     };
     img.src = url;
