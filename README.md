@@ -26,9 +26,9 @@ Podimo y tus favoritos), una rueda para moverte y unos pocos botones. Sin App St
 ### Temas Ámbar y Claro
 | En la rueda | Qué hace |
 |---|---|
-| Girar el dedo | Sube o baja por la lista |
+| Girar el dedo (vueltas completas si quieres) | Sube o baja por la lista; al llegar al final vuelve al principio |
 | **OK** (centro), un toque | Abre lo seleccionado |
-| **ajustes** (arriba), doble toque | Abre los ajustes |
+| **menú** (arriba), doble toque | Abre los ajustes |
 | **❙◀︎◀︎ / ▶︎▶︎❙** (izquierda / derecha), doble toque | Canción anterior / siguiente (atajos, ver paso 3) |
 | **▶︎❙❙** (abajo), doble toque | Abre Spotify |
 
@@ -54,7 +54,7 @@ Así no se disparan sin querer al girar. También puedes tocar directamente cual
 | Abajo | Modo ahorro | Abre Spotify |
 | Centro | Abre lo seleccionado | — |
 
-Para volver al diseño propio: arriba en la rueda → **Ámbar** → Listo.
+Para volver al diseño propio: doble toque en **menú** → **Ámbar** → Listo.
 
 ### Ajustes
 - **Cambiar o añadir botones:** pega tal cual un enlace copiado con *Compartir → Copiar enlace*

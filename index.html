@@ -137,7 +137,7 @@
 <div id="rueda" aria-label="Gira para moverte; toca el centro para abrir">
   <div id="disco"></div>
   <div id="aguja"></div>
-  <span class="op op-arriba">ajustes</span>
+  <span class="op op-arriba">menú</span>
   <span class="op op-izq">❙◀︎◀︎</span>
   <span class="op op-der">▶︎▶︎❙</span>
   <span class="op op-abajo">▶︎❙❙</span>
@@ -151,7 +151,7 @@
     <button id="listo">Listo</button>
   </div>
   <p class="ayuda">En la rueda: gira para moverte, toca el centro para abrir y haz <b>doble toque</b> en
-    ajustes, ⏮, ⏭ o ▶︎❙❙ (abre Spotify).</p>
+    menú, ❙◀︎◀︎, ▶︎▶︎❙ o ▶︎❙❙ (abre Spotify).</p>
   <p class="ayuda">Pega tal cual un enlace de Spotify, YouTube o Podimo (Compartir → Copiar enlace):
     se abrirá directamente en su app.</p>
   <div id="filas"></div>
@@ -236,7 +236,7 @@
   function urlAtajo(nombre) { return 'shortcuts://run-shortcut?name=' + encodeURIComponent(nombre); }
 
   // ---------- Lista ----------
-  var sel = 0;
+  var sel = 0, giroAguja = 0;
   function pintar() {
     var l = $('lista');
     l.textContent = '';
@@ -255,13 +255,14 @@
   function actualizar() {
     var b = cfg.botones[sel];
     $('centro').href = b ? b.u : '#';
-    $('aguja').style.transform = 'rotate(' + (sel * 30) + 'deg)';
+    $('aguja').style.transform = 'rotate(' + giroAguja + 'deg)';
   }
   function mover(paso) {
     var n = cfg.botones.length;
     if (!n) return;
-    var nuevo = Math.min(n - 1, Math.max(0, sel + paso));
-    if (nuevo === sel) return;
+    var nuevo = ((sel + paso) % n + n) % n;       // al pasar del último vuelve al primero, y al revés
+    giroAguja += paso * 30;
+    if (nuevo === sel) { actualizar(); return; }
     var as = $('lista').children;
     as[sel].className = '';
     sel = nuevo;
