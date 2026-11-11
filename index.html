@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="iPod">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="manifest" href="manifest.json">
+<title>iPod</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #000; color: #fff;
+    font-family: -apple-system, system-ui, sans-serif;
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
+  body { display: flex; flex-direction: column; box-sizing: border-box;
+    padding: calc(env(safe-area-inset-top) + 28px) 32px calc(env(safe-area-inset-bottom) + 20px); }
+  a { color: #fff; text-decoration: none; display: block; }
+  a:active { color: #555; }
+
+  #hora  { font-size: 64px; font-weight: 200; letter-spacing: -2px; line-height: 1; }
+  #fecha { font-size: 15px; color: #8e8e93; margin-top: 8px; }
+
+  #lista { flex: 1; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; }
+  #lista a { font-size: 42px; font-weight: 200; letter-spacing: -0.5px; padding: 10px 0; }
+  #lista.muchos a { font-size: 32px; padding: 8px 0; }
+
+  #pie { display: flex; gap: 26px; font: 13px ui-monospace, Menlo, monospace; }
+  #pie a { color: #8e8e93; padding: 8px 0; }
+  #pie a:active { color: #fff; }
+  #dormir-op { display: none; gap: 18px; }
+  #dormir-op.ver { display: flex; }
+  #dormir-op a { color: #fff !important; }
+
+  #ajustes { display: none; position: fixed; inset: 0; background: #000; overflow-y: auto; box-sizing: border-box;
+    padding: calc(env(safe-area-inset-top) + 20px) 24px calc(env(safe-area-inset-bottom) + 24px); }
+  #ajustes.ver { display: block; }
+  #ajustes { -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+  .cabecera { position: sticky; top: calc(-1 * (env(safe-area-inset-top) + 20px)); z-index: 1; background: #000;
+    display: flex; align-items: center; justify-content: space-between;
+    margin: calc(-1 * (env(safe-area-inset-top) + 20px)) -24px 0;
+    padding: calc(env(safe-area-inset-top) + 20px) 24px 12px; border-bottom: 1px solid #222; }
+  #ajustes h2 { font-size: 28px; font-weight: 300; margin: 0; }
+  #listo { border-color: #fff; }
+  #ajustes .ayuda:first-of-type { margin-top: 16px; }
+  .fila { display: grid; grid-template-columns: 1fr auto; gap: 6px 8px; padding: 12px 0; border-bottom: 1px solid #222; }
+  input { width: 100%; box-sizing: border-box; background: #111; border: 1px solid #333; border-radius: 6px;
+    color: #fff; font: 16px -apple-system, system-ui, sans-serif; padding: 10px;
+    -webkit-user-select: text; user-select: text; }
+  button { background: none; border: 1px solid #444; border-radius: 6px; color: #fff;
+    font: 15px -apple-system, system-ui, sans-serif; padding: 10px 14px; }
+  button:active { background: #222; }
+  .quitar { grid-row: span 2; border: none; color: #8e8e93; font-size: 26px; padding: 0 4px; }
+  .botones { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0; }
+  label { display: block; color: #8e8e93; font-size: 13px; margin: 16px 0 6px; }
+  .ayuda { color: #8e8e93; font-size: 13px; line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<header id="reloj">
+  <div id="hora">--:--</div>
+  <div id="fecha"></div>
+</header>
+
+<main id="lista"></main>
+
+<footer id="pie">
+  <a href="#" id="modo">modo iPod</a>
+  <a href="#" id="dormir">dormir</a>
+  <span id="dormir-op">
+    <a href="#" data-min="15">15</a><a href="#" data-min="30">30</a><a href="#" data-min="60">60</a>
+  </span>
+</footer>
+
+<section id="ajustes">
+  <div class="cabecera">
+    <h2>Ajustes</h2>
+    <button id="listo">Listo</button>
+  </div>
+  <p class="ayuda">Pega un enlace de Spotify, YouTube o Podimo (Compartir → Copiar enlace).
+    Los de Spotify y YouTube se abren directamente en la app.</p>
+  <div id="filas"></div>
+  <div class="botones">
+    <button id="anadir">Añadir botón</button>
+    <button id="restaurar">Restaurar</button>
+  </div>
+  <label for="atajo-modo">Atajo del modo iPod</label>
+  <input id="atajo-modo" autocapitalize="off" autocorrect="off">
+  <label for="atajo-dormir">Atajo para dormir</label>
+  <input id="atajo-dormir" autocapitalize="off" autocorrect="off">
+</section>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+
+  // ---------- Configuración guardada en el iPhone ----------
+  var DEF = {
+    botones: [
+      { n: 'Spotify', u: 'spotify://' },
+      { n: 'YouTube', u: 'youtube://' },
+      { n: 'Podimo',  u: 'podimo://', w: 'https://podimo.com' }
+    ],
+    modo: 'Modo iPod',
+    dormir: 'Dormir'
+  };
+  function copia(o) { return JSON.parse(JSON.stringify(o)); }
+  function cargar() {
+    try { var c = JSON.parse(localStorage.getItem('ipod')); if (c && c.botones) return c; } catch (e) {}
+    return copia(DEF);
+  }
+  function guardar() { try { localStorage.setItem('ipod', JSON.stringify(cfg)); } catch (e) {} }
+  var cfg = cargar();
+
+  // ---------- Enlaces web -> enlaces que abren la app ----------
+  function aApp(u) {
+    var m;
+    if ((m = u.match(/open\.spotify\.com\/(?:intl-[a-z]+\/)?(playlist|album|artist|track|show|episode)\/([A-Za-z0-9]+)/)))
+      return 'spotify:' + m[1] + ':' + m[2];
+    if ((m = u.match(/^https?:\/\/(?:www\.|m\.)?youtube\.com(\/.*)?$/)))
+      return 'youtube://www.youtube.com' + (m[1] || '/');
+    if ((m = u.match(/^https?:\/\/youtu\.be\/([\w-]+)/)))
+      return 'youtube://www.youtube.com/watch?v=' + m[1];
+    return u;
+  }
+
+  function abrir(b) {
+    var destino = aApp(b.u);
+    location.href = destino;
+    if (/^https?:/i.test(destino)) return;
+    // Si la app no se abre en 1,5 s, prueba con la web.
+    var web = /^https?:/i.test(b.u) ? b.u : (b.w || '');
+    if (web) setTimeout(function () { if (!document.hidden) location.href = web; }, 1500);
+  }
+
+  function atajo(nombre, texto) {
+    var u = 'shortcuts://run-shortcut?name=' + encodeURIComponent(nombre);
+    if (texto) u += '&input=text&text=' + encodeURIComponent(texto);
+    location.href = u;
+  }
+
+  // ---------- Pantalla principal ----------
+  function pintar() {
+    var l = $('lista');
+    l.textContent = '';
+    cfg.botones.forEach(function (b) {
+      var a = document.createElement('a');
+      a.href = '#';
+      a.textContent = b.n;
+      a.onclick = function (e) { e.preventDefault(); abrir(b); };
+      l.appendChild(a);
+    });
+    l.className = cfg.botones.length > 4 ? 'muchos' : '';
+  }
+
+  // Reloj: se actualiza una vez por minuto y se para con la pantalla apagada.
+  var t;
+  function reloj() {
+    var d = new Date();
+    $('hora').textContent = d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    $('fecha').textContent = d.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+    clearTimeout(t);
+    t = setTimeout(reloj, 60000 - d.getSeconds() * 1000 - d.getMilliseconds() + 50);
+  }
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) clearTimeout(t); else reloj();
+  });
+
+  $('modo').onclick = function (e) { e.preventDefault(); atajo(cfg.modo); };
+  $('dormir').onclick = function (e) { e.preventDefault(); $('dormir-op').classList.toggle('ver'); };
+  Array.prototype.forEach.call(document.querySelectorAll('#dormir-op a'), function (a) {
+    a.onclick = function (e) {
+      e.preventDefault();
+      $('dormir-op').classList.remove('ver');
+      atajo(cfg.dormir, a.dataset.min);
+    };
+  });
+
+  // ---------- Ajustes: mantener pulsada la hora ----------
+  var pulsacion;
+  var r = $('reloj');
+  r.addEventListener('touchstart', function () { pulsacion = setTimeout(abrirAjustes, 600); }, { passive: true });
+  ['touchend', 'touchmove', 'touchcancel'].forEach(function (ev) {
+    r.addEventListener(ev, function () { clearTimeout(pulsacion); });
+  });
+  r.addEventListener('dblclick', abrirAjustes);          // en ordenador
+  r.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+
+  function fila(b) {
+    var d = document.createElement('div');
+    d.className = 'fila';
+    d.dataset.w = b.w || '';
+    var n = document.createElement('input');
+    n.className = 'n'; n.placeholder = 'Nombre'; n.value = b.n || '';
+    var u = document.createElement('input');
+    u.className = 'u'; u.type = 'url'; u.placeholder = 'https://open.spotify.com/playlist/…'; u.value = b.u || '';
+    u.setAttribute('autocapitalize', 'off'); u.setAttribute('autocorrect', 'off');
+    var x = document.createElement('button');
+    x.className = 'quitar'; x.textContent = '×'; x.setAttribute('aria-label', 'Quitar');
+    x.onclick = function () { d.remove(); };
+    d.appendChild(n); d.appendChild(x); d.appendChild(u);
+    return d;
+  }
+
+  function rellenar(c) {
+    var f = $('filas');
+    f.textContent = '';
+    c.botones.forEach(function (b) { f.appendChild(fila(b)); });
+    $('atajo-modo').value = c.modo;
+    $('atajo-dormir').value = c.dormir;
+  }
+
+  function abrirAjustes() { rellenar(cfg); $('ajustes').classList.add('ver'); }
+
+  $('anadir').onclick = function () { $('filas').appendChild(fila({})); };
+  $('restaurar').onclick = function () { rellenar(copia(DEF)); };
+  $('listo').onclick = function () {
+    cfg.botones = Array.prototype.map.call($('filas').children, function (d) {
+      var b = { n: d.querySelector('.n').value.trim(), u: d.querySelector('.u').value.trim() };
+      if (d.dataset.w) b.w = d.dataset.w;
+      return b;
+    }).filter(function (b) { return b.n && b.u; });
+    cfg.modo = $('atajo-modo').value.trim() || DEF.modo;
+    cfg.dormir = $('atajo-dormir').value.trim() || DEF.dormir;
+    guardar();
+    pintar();
+    $('ajustes').classList.remove('ver');
+  };
+
+  pintar();
+  reloj();
+
+  // Guarda la página en el iPhone para que funcione sin conexión.
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+})();
+</script>
+</body>
+</html>
