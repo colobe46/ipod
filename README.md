@@ -33,6 +33,21 @@ Podimo y tus favoritos), una rueda para moverte y unos pocos botones. Sin App St
 
 También puedes tocar directamente cualquier nombre de la lista.
 
+### Temas (MENÚ → Tema)
+- **Ámbar:** el diseño propio de la app (pantalla ámbar, rueda giratoria y botones). Encaja en cualquier iPhone.
+- **Mi foto:** pon de fondo una imagen con una pantalla arriba y una rueda abajo. La lista aparece dentro de la
+  pantalla y la rueda táctil se coloca encima de la dibujada. Pulsa **Elegir foto** y escoge la imagen de tu carrete;
+  se guarda solo en tu iPhone. Con este tema, la rueda dibujada funciona así:
+
+| Zona de la rueda | Un toque | Doble toque |
+|---|---|---|
+| Arriba | Ajustes | — |
+| Izquierda / derecha | Anterior / siguiente en la lista | Canción anterior / siguiente |
+| Abajo | Modo ahorro | Abre Spotify |
+| Centro | Abre lo seleccionado | — |
+
+Para volver al diseño propio: arriba en la rueda → **Ámbar** → Listo.
+
 ### Ajustes (botón MENÚ)
 - **Cambiar o añadir botones:** pega tal cual un enlace copiado con *Compartir → Copiar enlace*
   (una lista de Spotify, un canal o vídeo de YouTube, un podcast de Podimo). Se abre directamente en su app.
@@ -106,6 +121,8 @@ Concentración → +) que muestre solo esa página y actívala desde "Modo iPod"
 | Al tocar una app se abre su web | Mantén pulsado el nombre → **Abrir en …** |
 | ▶︎❙❙ o ⏮/⏭ no hacen nada | Revisa que los atajos se llaman exactamente "Modo iPod", "Siguiente" y "Anterior" (o cambia los nombres en MENÚ). |
 | He borrado un botón sin querer | MENÚ → Añadir botón (o Restaurar). |
+| Con "Mi foto" la lista o la rueda no encajan | La imagen debe tener la pantalla arriba y la rueda abajo, con proporción parecida a la del iPhone. |
+| He perdido la foto de fondo | Se borra si borras el icono o los datos de Safari: vuelve a pulsar **Elegir foto**. |
 
 ## Batería
 La app no hace nada por su cuenta: sin animaciones continuas, sin conexiones y con el reloj actualizándose una vez
