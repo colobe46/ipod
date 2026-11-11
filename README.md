@@ -73,6 +73,25 @@ Los ajustes se guardan en el iPhone, separados de Safari: configúralos desde el
 
 ---
 
+## Mi música (sin internet)
+En la lista principal, **Mi música** reproduce tus propios archivos (MP3, M4A…) dentro de la app, sin conexión.
+- **Añadir:** en Mi música, *＋ Añadir canciones* (o menú → Mi música → Añadir canciones) y elígelos desde la app
+  Archivos. Se guardan dentro de la app, en el iPhone. Si el MP3 trae título, artista y portada, se usan; si no, se
+  usa el nombre del archivo ("Artista - Título" también vale).
+- **Escuchar:** gira para elegir y toca **OK**. Se abre **Reproduciendo**, con portada, título, artista y barra de
+  progreso. Ahí la rueda avanza o retrocede 5 segundos por paso, **OK** pausa o reanuda y el doble toque en **menú**
+  vuelve atrás. También hay *⤮ Aleatorio*. Al terminar una canción empieza la siguiente.
+- **Pantalla de bloqueo:** muestra la canción y los botones de reproducir, pausar, siguiente y anterior.
+- **Borrar:** menú → Mi música → la **×** de cada canción.
+
+> Solo funciona con archivos que tengas tú. La música de Spotify va cifrada dentro de su app y ninguna otra app puede
+> leerla. Si pasa mucho rato con la pantalla bloqueada, iOS puede cortar el sonido de las apps web.
+
+## Tendencias
+**Tendencias** muestra las 25 canciones más escuchadas en España (lista pública de Apple Music, se actualiza sola cada
+12 horas; *↻ Sincronizar* la pide al momento). Al elegir una se abre en **Spotify**, donde puedes guardarla y
+descargarla para escucharla sin conexión.
+
 ## 3. Crear los atajos (app Atajos)
 
 ### Instalación rápida
