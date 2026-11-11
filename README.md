@@ -70,9 +70,20 @@ Los ajustes se guardan en el iPhone, separados de Safari: configúralos desde el
 
 ## 3. Crear los atajos (app Atajos)
 
-> No se pueden instalar atajos ya hechos desde una web: Apple solo permite importar atajos firmados en un Mac o
-> compartidos desde un iPhone. Son muy cortos, en un par de minutos están.
+### Instalación rápida
+Toca cada enlace en el iPhone → **Añadir atajo**. No les cambies el nombre.
 
+| Atajo | Enlace |
+|---|---|
+| **Modo iPod** | [Instalar](https://www.icloud.com/shortcuts/9a1fe8f0be76423487fc017158e67729) |
+| **Abrir iPod** | [Instalar](https://www.icloud.com/shortcuts/11135d48c4d24c739f2167c03302dc7b) |
+| **Siguiente** | [Instalar](https://www.icloud.com/shortcuts/eb99e8e89d3d4df68795aa5d2d280ad7) |
+| **Anterior** | [Instalar](https://www.icloud.com/shortcuts/6def905cf71d438f973a350ffb6a31b2) |
+| **Play Pausa** | [Instalar](https://www.icloud.com/shortcuts/90f79e1e5643489580a30c169d2c3427) |
+
+"Abrir iPod" es opcional (ver paso 4). También están en la app: **menú → Atajos**.
+
+### O créalos a mano
 Ábrelos en **Atajos → pestaña "Atajos" (abajo) → botón +**. *No* uses la pestaña "Automatización" para esto.
 Para renombrar: toca el nombre de arriba → **Renombrar**. Para añadir acciones: escríbelas en **"Buscar acciones"**.
 

@@ -166,7 +166,7 @@
   <b>No se pudo ejecutar el atajo «<span id="nombre-atajo"></span>».</b>
   <p>Lo más probable es que no exista o tenga otro nombre. Créalo en la app Atajos con ese nombre exacto
     (o cambia el nombre en menú → ajustes).</p>
-  <div><a href="https://github.com/colobe46/ipod#3-crear-los-atajos-app-atajos">Ver cómo crearlo</a>
+  <div><a id="instalar-falta" href="https://github.com/colobe46/ipod#3-crear-los-atajos-app-atajos">Ver cómo crearlo</a>
     <button id="cerrar-error">Cerrar</button></div>
 </div>
 
@@ -248,7 +248,17 @@
   </div>
 
   <div class="pagina" data-p="atajos">
-    <p class="ayuda">Escribe el nombre exacto que tienen en la app Atajos. Si alguno no existe, la app te avisará.</p>
+    <label>Instalar atajos</label>
+    <nav class="secciones" style="margin-top:0">
+      <a href="https://www.icloud.com/shortcuts/9a1fe8f0be76423487fc017158e67729"><span>Modo iPod</span><small>Instalar</small></a>
+      <a href="https://www.icloud.com/shortcuts/11135d48c4d24c739f2167c03302dc7b"><span>Abrir iPod</span><small>Instalar</small></a>
+      <a href="https://www.icloud.com/shortcuts/eb99e8e89d3d4df68795aa5d2d280ad7"><span>Siguiente</span><small>Instalar</small></a>
+      <a href="https://www.icloud.com/shortcuts/6def905cf71d438f973a350ffb6a31b2"><span>Anterior</span><small>Instalar</small></a>
+      <a href="https://www.icloud.com/shortcuts/90f79e1e5643489580a30c169d2c3427"><span>Play Pausa</span><small>Instalar</small></a>
+    </nav>
+    <p class="ayuda">Toca uno, pulsa <b>Añadir atajo</b> y no le cambies el nombre. "Abrir iPod" es opcional:
+      sirve para abrir esta app con el doble toque en la parte de atrás del iPhone (ver Ayuda).</p>
+    <p class="ayuda">Si en la app Atajos les pusiste otro nombre, escríbelo aquí. Si alguno no existe, la app te avisará.</p>
     <label for="atajo-modo">Atajo de ahorro</label>
     <input id="atajo-modo" autocapitalize="off" autocorrect="off">
     <label for="atajo-pp">Atajo reproducir / pausar</label>
@@ -601,6 +611,8 @@
   var falta = new URLSearchParams(location.search).get('falta');
   if (falta) {
     $('nombre-atajo').textContent = falta;
+    var ENLACES = {"Modo iPod": "https://www.icloud.com/shortcuts/9a1fe8f0be76423487fc017158e67729", "Abrir iPod": "https://www.icloud.com/shortcuts/11135d48c4d24c739f2167c03302dc7b", "Siguiente": "https://www.icloud.com/shortcuts/eb99e8e89d3d4df68795aa5d2d280ad7", "Anterior": "https://www.icloud.com/shortcuts/6def905cf71d438f973a350ffb6a31b2", "Play Pausa": "https://www.icloud.com/shortcuts/90f79e1e5643489580a30c169d2c3427"};
+    if (ENLACES[falta]) { $('instalar-falta').href = ENLACES[falta]; $('instalar-falta').textContent = 'Instalarlo'; }
     $('error-atajo').style.display = 'block';
     history.replaceState(null, '', location.pathname);
   }
