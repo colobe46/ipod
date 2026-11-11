@@ -30,7 +30,7 @@ Podimo y tus favoritos), una rueda para moverte y unos pocos botones. Sin App St
 | **OK** (centro), un toque | Abre lo seleccionado |
 | **menú** (arriba), doble toque | Abre los ajustes |
 | **❙◀︎◀︎ / ▶︎▶︎❙** (izquierda / derecha), doble toque | Canción anterior / siguiente (atajos, ver paso 3) |
-| **▶︎❙❙** (abajo), doble toque | Abre Spotify |
+| **▶︎❙❙** (abajo), doble toque | Reproducir / pausar lo que esté sonando (atajo "Play Pausa") |
 
 Las opciones de la rueda solo actúan con **doble toque**: con el primero se iluminan y con el segundo se activan.
 Así no se disparan sin querer al girar. También puedes tocar directamente cualquier nombre de la lista.
@@ -51,7 +51,7 @@ Así no se disparan sin querer al girar. También puedes tocar directamente cual
 |---|---|---|
 | Arriba | Ajustes | — |
 | Izquierda / derecha | Anterior / siguiente en la lista | Canción anterior / siguiente |
-| Abajo | Modo ahorro | Abre Spotify |
+| Abajo | Modo ahorro | Reproducir / pausar (atajo "Play Pausa") |
 | Centro | Abre lo seleccionado | — |
 
 Para volver al diseño propio: doble toque en **menú** → **Ámbar** → Listo.
@@ -85,6 +85,10 @@ Para renombrar: toca el nombre de arriba → **Renombrar**. Para añadir accione
 | Ajustar datos móviles | Activar | Internet fuera de casa (quítalo si no lo necesitas) |
 | Ajustar brillo | 25 % | Menos gasto de pantalla |
 | Ajustar concentración | No molestar → Activar | Sin notificaciones que enciendan la pantalla |
+
+### "Play Pausa" (▶︎❙❙ en la rueda, doble toque)
+Una sola acción: **Reproducir/Pausar**. Pausa o reanuda lo que esté sonando. Si no estaba sonando nada,
+iOS puede reanudar la última app que usaste: es cosa de iOS, el atajo no puede saber si hay algo en marcha.
 
 ### "Siguiente" y "Anterior" (⏭ / ⏮ en la rueda, doble toque)
 - **Siguiente:** una sola acción, **Saltar hacia delante**.
