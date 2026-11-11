@@ -56,19 +56,22 @@ Así no se disparan sin querer al girar. También puedes tocar directamente cual
 
 Para volver al diseño propio: doble toque en **menú** → **Ámbar** → Listo.
 
-### Ajustes
-- **Cambiar o añadir botones:** pega tal cual un enlace copiado con *Compartir → Copiar enlace*
-  (una lista de Spotify, un canal o vídeo de YouTube, un podcast de Podimo). Se abre directamente en su app.
-- **Quitar un botón:** la **×** de su derecha.
-- **Restaurar:** vuelve a Spotify, YouTube y Podimo.
-- **Nombres de los atajos:** solo si les has puesto otro nombre en la app Atajos.
-- Pulsa **Listo** (arriba a la derecha) para guardar.
+### Menú (doble toque en "menú" de la rueda)
+Primero aparece un menú con apartados; toca uno para entrar y **‹ Menú** para volver. **Listo** guarda y cierra.
+- **Mi lista:** cambiar, añadir o quitar botones. Pega tal cual un enlace copiado con *Compartir → Copiar enlace*
+  (una lista de Spotify, un canal o vídeo de YouTube, un podcast de Podimo). **Restaurar** vuelve a los tres de siempre.
+- **Tema y colores:** Ámbar, Claro o Mi foto; color de énfasis (Ámbar) y color de fondo (Claro).
+- **Atajos:** el nombre exacto de cada atajo, solo si en la app Atajos les pusiste otro.
+- **Activar modo ahorro ahora** y **Ayuda** (este documento).
 
 Los ajustes se guardan en el iPhone, separados de Safari: configúralos desde el icono de la app.
 
 ---
 
 ## 3. Crear los atajos (app Atajos)
+
+> No se pueden instalar atajos ya hechos desde una web: Apple solo permite importar atajos firmados en un Mac o
+> compartidos desde un iPhone. Son muy cortos, en un par de minutos están.
 
 Ábrelos en **Atajos → pestaña "Atajos" (abajo) → botón +**. *No* uses la pestaña "Automatización" para esto.
 Para renombrar: toca el nombre de arriba → **Renombrar**. Para añadir acciones: escríbelas en **"Buscar acciones"**.
@@ -127,7 +130,7 @@ Concentración → +) que muestre solo esa página y actívala desde "Modo iPod"
 | No veo la versión nueva | Cierra la app desde el selector de apps y ábrela dos veces. Si sigue igual: Ajustes → Apps → Safari → Avanzado → Datos de sitios web → borra **github.io**. |
 | Sale la barra de Safari | Borra el icono y vuelve a añadirlo con **"Abrir como app web"** activado (paso 1). |
 | Al tocar una app se abre su web | Mantén pulsado el nombre → **Abrir en …** |
-| El ahorro o ⏮/⏭ no hacen nada | Revisa que los atajos se llaman exactamente "Modo iPod", "Siguiente" y "Anterior" (o cambia los nombres en ajustes). |
+| Sale el aviso rojo "No se pudo ejecutar el atajo…" | Ese atajo no existe o tiene otro nombre. Créalo (paso 3) con el nombre exacto que indica el aviso, o cambia el nombre en menú → Atajos. |
 | He borrado un botón sin querer | Ajustes → Añadir botón (o Restaurar). |
 | Con "Mi foto" la lista o la rueda no encajan | La imagen debe tener la pantalla arriba y la rueda abajo, con proporción parecida a la del iPhone. |
 | He perdido la foto de fondo | Se borra si borras el icono o los datos de Safari: vuelve a pulsar **Elegir foto**. |

@@ -98,7 +98,21 @@
     display: flex; align-items: center; justify-content: space-between;
     margin: calc(-1 * (env(safe-area-inset-top) + 20px)) -24px 0;
     padding: calc(env(safe-area-inset-top) + 20px) 24px 12px; border-bottom: 1px solid #222; }
-  #ajustes h2 { font-size: 28px; font-weight: 300; margin: 0; }
+  #ajustes h2 { font-size: 20px; font-weight: 500; margin: 0; flex: 1; text-align: center; }
+  .cabecera { gap: 10px; }
+  #atras { border: none !important; padding-left: 0 !important; color: #8e8e93 !important; visibility: hidden; }
+  #ajustes.sub #atras { visibility: visible; }
+  .pagina { display: none; }
+  .pagina.ver { display: block; }
+  .secciones { display: flex; flex-direction: column; margin-top: 16px; border: 1px solid #222; border-radius: 12px; overflow: hidden; }
+  .secciones > * { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; text-align: left;
+    border: none !important; border-bottom: 1px solid #222 !important; border-radius: 0 !important;
+    padding: 14px 16px !important; background: #0d0d0e !important; color: #fff; font: 17px -apple-system, system-ui, sans-serif; }
+  .secciones > *:last-child { border-bottom: none !important; }
+  .secciones > *:active { background: #1c1c1e !important; }
+  .secciones small { color: #8e8e93; font-size: 13px; }
+  #ajustes .color { width: 36px; height: 36px; border-radius: 50%; }
+  #ajustes input[type=color] { width: 44px; height: 38px; padding: 2px; border-radius: 10px; background: #111; }
   .fila { display: grid; grid-template-columns: 1fr auto; gap: 6px 8px; padding: 12px 0; border-bottom: 1px solid #222; }
   #ajustes input { width: 100%; box-sizing: border-box; background: #111; border: 1px solid #333; border-radius: 6px;
     color: #fff; font: 16px -apple-system, system-ui, sans-serif; padding: 10px;
@@ -117,6 +131,13 @@
   .tema.activo { border-color: var(--ambar) !important; color: var(--ambar) !important; }
   .ayuda { color: #8e8e93; font-size: 13px; line-height: 1.5; margin-top: 16px; }
 
+  #error-atajo { display: none; position: fixed; z-index: 5; left: 12px; right: 12px; top: calc(env(safe-area-inset-top) + 8px);
+    background: #2a1214; color: #fff; border: 1px solid #ff6b6b; border-radius: 12px; padding: 14px 16px;
+    font-size: 15px; line-height: 1.45; }
+  #error-atajo p { margin: 6px 0 12px; color: #f0d0d0; font-size: 14px; }
+  #error-atajo div { display: flex; gap: 10px; }
+  #error-atajo a, #error-atajo button { flex: 1; text-align: center; padding: 10px; border-radius: 8px; font-size: 15px;
+    border: 1px solid #ff6b6b; background: none; color: #fff; font-family: inherit; }
   #aviso-safari { display: none; position: fixed; z-index: 4; left: 12px; right: 12px; top: calc(env(safe-area-inset-top) + 8px);
     background: #1c1c1e; color: #fff; font-size: 14px; line-height: 1.45; padding: 12px 14px; border-radius: 10px;
     border: 1px solid #3a3a3c; }
@@ -127,6 +148,14 @@
 <div id="aviso-safari">
   Estás en Safari. Para verla a pantalla completa: Compartir → Añadir a pantalla de inicio →
   activa <b>Abrir como app web</b> → Añadir, y ábrela desde ese icono.
+</div>
+
+<div id="error-atajo" role="alert">
+  <b>No se pudo ejecutar el atajo «<span id="nombre-atajo"></span>».</b>
+  <p>Lo más probable es que no exista o tenga otro nombre. Créalo en la app Atajos con ese nombre exacto
+    (o cambia el nombre en menú → ajustes).</p>
+  <div><a href="https://github.com/colobe46/ipod#3-crear-los-atajos-app-atajos">Ver cómo crearlo</a>
+    <button id="cerrar-error">Cerrar</button></div>
 </div>
 
 <section id="pantalla">
@@ -147,56 +176,76 @@
 
 <section id="ajustes">
   <div class="cabecera">
-    <h2>Ajustes</h2>
+    <button id="atras" aria-label="Volver al menú">‹ Menú</button>
+    <h2 id="titulo-aj">Menú</h2>
     <button id="listo">Listo</button>
   </div>
-  <p class="ayuda">En la rueda: gira para moverte, toca el centro para abrir y haz <b>doble toque</b> en
-    menú, ❙◀︎◀︎, ▶︎▶︎❙ o ▶︎❙❙ (abre Spotify).</p>
-  <p class="ayuda">Pega tal cual un enlace de Spotify, YouTube o Podimo (Compartir → Copiar enlace):
-    se abrirá directamente en su app.</p>
-  <div id="filas"></div>
-  <div class="botones-aj">
-    <button id="anadir">Añadir botón</button>
-    <button id="restaurar">Restaurar</button>
+
+  <div class="pagina" data-p="inicio">
+    <nav class="secciones">
+      <button data-ir="botones"><span>Mi lista</span><small>Spotify, YouTube, Podimo y favoritos</small></button>
+      <button data-ir="aspecto"><span>Tema y colores</span><small>Ámbar, Claro o Mi foto</small></button>
+      <button data-ir="atajos"><span>Atajos</span><small>Ahorro, canción siguiente y anterior</small></button>
+      <button id="ahorro-ya"><span>Activar modo ahorro ahora</span><small>Ejecuta el atajo de ahorro</small></button>
+      <a href="https://github.com/colobe46/ipod#readme"><span>Ayuda</span><small>Instrucciones completas</small></a>
+    </nav>
+    <p class="ayuda">En la rueda: gira para moverte, toca el centro para abrir y haz <b>doble toque</b> en
+      menú, ❙◀︎◀︎, ▶︎▶︎❙ o ▶︎❙❙ (abre Spotify).</p>
   </div>
-  <label>Tema</label>
-  <div class="botones-aj" style="margin-top:0">
-    <button class="tema" data-tema="ambar">Ámbar</button>
-    <button class="tema" data-tema="claro">Claro</button>
-    <button class="tema" data-tema="foto">Mi foto</button>
-    <button id="elegir-fondo">Elegir foto</button>
+
+  <div class="pagina" data-p="botones">
+    <p class="ayuda">Pega tal cual un enlace de Spotify, YouTube o Podimo (Compartir → Copiar enlace):
+      se abrirá directamente en su app.</p>
+    <div id="filas"></div>
+    <div class="botones-aj">
+      <button id="anadir">Añadir botón</button>
+      <button id="restaurar">Restaurar</button>
+    </div>
   </div>
-  <input id="archivo-fondo" type="file" accept="image/*" style="display:none">
-  <p class="ayuda" style="margin-top:0">"Mi foto" coloca la lista y la rueda encima de una imagen con una pantalla
-    arriba y una rueda abajo. La foto se guarda solo en este iPhone.</p>
-  <p id="aviso-foto" class="ayuda" style="color:#ff6b6b; display:none"></p>
-  <label>Color de énfasis (tema Ámbar)</label>
-  <div class="colores" id="colores">
-    <button class="color" data-c="#ffb340" style="background:#ffb340" aria-label="Ámbar"></button>
-    <button class="color" data-c="#4cd964" style="background:#4cd964" aria-label="Verde"></button>
-    <button class="color" data-c="#5ac8fa" style="background:#5ac8fa" aria-label="Azul"></button>
-    <button class="color" data-c="#ff6b9a" style="background:#ff6b9a" aria-label="Rosa"></button>
-    <button class="color" data-c="#c49bff" style="background:#c49bff" aria-label="Lila"></button>
-    <button class="color" data-c="#f2f2f2" style="background:#f2f2f2" aria-label="Blanco"></button>
-    <input id="color-libre" type="color" aria-label="Otro color">
+
+  <div class="pagina" data-p="aspecto">
+    <label>Tema</label>
+    <div class="botones-aj" style="margin-top:0">
+      <button class="tema" data-tema="ambar">Ámbar</button>
+      <button class="tema" data-tema="claro">Claro</button>
+      <button class="tema" data-tema="foto">Mi foto</button>
+      <button id="elegir-fondo">Elegir foto</button>
+    </div>
+    <input id="archivo-fondo" type="file" accept="image/*" style="display:none">
+    <p class="ayuda" style="margin-top:0">"Mi foto" coloca la lista y la rueda encima de una imagen con una pantalla
+      arriba y una rueda abajo. La foto se guarda solo en este iPhone.</p>
+    <p id="aviso-foto" class="ayuda" style="color:#ff6b6b; display:none"></p>
+    <label>Color de énfasis (tema Ámbar)</label>
+    <div class="colores" id="colores">
+      <button class="color" data-c="#ffb340" style="background:#ffb340" aria-label="Ámbar"></button>
+      <button class="color" data-c="#4cd964" style="background:#4cd964" aria-label="Verde"></button>
+      <button class="color" data-c="#5ac8fa" style="background:#5ac8fa" aria-label="Azul"></button>
+      <button class="color" data-c="#ff6b9a" style="background:#ff6b9a" aria-label="Rosa"></button>
+      <button class="color" data-c="#c49bff" style="background:#c49bff" aria-label="Lila"></button>
+      <button class="color" data-c="#f2f2f2" style="background:#f2f2f2" aria-label="Blanco"></button>
+      <input id="color-libre" type="color" aria-label="Otro color">
+    </div>
+    <label>Color de fondo (tema Claro)</label>
+    <div class="colores">
+      <button class="color cfondo" data-c="#c9c9ce" style="background:#c9c9ce" aria-label="Plata"></button>
+      <button class="color cfondo" data-c="#1c1c1e" style="background:#1c1c1e;outline:1px solid #444" aria-label="Negro"></button>
+      <button class="color cfondo" data-c="#b3263a" style="background:#b3263a" aria-label="Rojo"></button>
+      <button class="color cfondo" data-c="#2f5fb3" style="background:#2f5fb3" aria-label="Azul"></button>
+      <button class="color cfondo" data-c="#3c8d5a" style="background:#3c8d5a" aria-label="Verde"></button>
+      <button class="color cfondo" data-c="#e7b8c8" style="background:#e7b8c8" aria-label="Rosa"></button>
+      <input id="fondo-libre" type="color" aria-label="Otro color" style="width:40px;height:36px;padding:0;border:1px solid #444;border-radius:8px;background:none">
+    </div>
   </div>
-  <label>Color de fondo (tema Claro)</label>
-  <div class="colores">
-    <button class="color cfondo" data-c="#c9c9ce" style="background:#c9c9ce" aria-label="Plata"></button>
-    <button class="color cfondo" data-c="#1c1c1e" style="background:#1c1c1e;outline:1px solid #444" aria-label="Negro"></button>
-    <button class="color cfondo" data-c="#b3263a" style="background:#b3263a" aria-label="Rojo"></button>
-    <button class="color cfondo" data-c="#2f5fb3" style="background:#2f5fb3" aria-label="Azul"></button>
-    <button class="color cfondo" data-c="#3c8d5a" style="background:#3c8d5a" aria-label="Verde"></button>
-    <button class="color cfondo" data-c="#e7b8c8" style="background:#e7b8c8" aria-label="Rosa"></button>
-    <input id="fondo-libre" type="color" class="libre" aria-label="Otro color" style="width:40px;height:36px;padding:0;border:1px solid #444;border-radius:8px;background:none">
+
+  <div class="pagina" data-p="atajos">
+    <p class="ayuda">Escribe el nombre exacto que tienen en la app Atajos. Si alguno no existe, la app te avisará.</p>
+    <label for="atajo-modo">Atajo de ahorro</label>
+    <input id="atajo-modo" autocapitalize="off" autocorrect="off">
+    <label for="atajo-sig">Atajo canción siguiente</label>
+    <input id="atajo-sig" autocapitalize="off" autocorrect="off">
+    <label for="atajo-ant">Atajo canción anterior</label>
+    <input id="atajo-ant" autocapitalize="off" autocorrect="off">
   </div>
-  <div class="botones-aj"><button id="ahorro-ya">Activar modo ahorro ahora</button></div>
-  <label for="atajo-modo">Atajo de ahorro</label>
-  <input id="atajo-modo" autocapitalize="off" autocorrect="off">
-  <label for="atajo-sig">Atajo canción siguiente</label>
-  <input id="atajo-sig" autocapitalize="off" autocorrect="off">
-  <label for="atajo-ant">Atajo canción anterior</label>
-  <input id="atajo-ant" autocapitalize="off" autocorrect="off">
 </section>
 
 <script>
@@ -233,7 +282,12 @@
   function guardar() { try { localStorage.setItem('ipod', JSON.stringify(cfg)); } catch (e) {} }
   var cfg = cargar();
 
-  function urlAtajo(nombre) { return 'shortcuts://run-shortcut?name=' + encodeURIComponent(nombre); }
+  // Si el atajo no existe (o falla), Atajos vuelve a esta página con ?falta=Nombre y se muestra un aviso.
+  function urlAtajo(nombre) {
+    var vuelta = location.origin + location.pathname + '?falta=' + encodeURIComponent(nombre);
+    return 'shortcuts://x-callback-url/run-shortcut?name=' + encodeURIComponent(nombre) +
+      '&x-error=' + encodeURIComponent(vuelta);
+  }
 
   // ---------- Lista ----------
   var sel = 0, giroAguja = 0;
@@ -406,7 +460,20 @@
     $('atajo-sig').value = c.sig || DEF.sig;
     $('atajo-ant').value = c.ant || DEF.ant;
   }
-  function abrirAjustes() { rellenar(cfg); $('ajustes').scrollTop = 0; $('ajustes').classList.add('ver'); }
+  var TITULOS = { inicio: 'Menú', botones: 'Mi lista', aspecto: 'Tema y colores', atajos: 'Atajos' };
+  function irPagina(p) {
+    Array.prototype.forEach.call(document.querySelectorAll('.pagina'), function (d) {
+      d.classList.toggle('ver', d.dataset.p === p);
+    });
+    $('titulo-aj').textContent = TITULOS[p];
+    $('ajustes').classList.toggle('sub', p !== 'inicio');
+    $('ajustes').scrollTop = 0;
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('[data-ir]'), function (b) {
+    b.onclick = function () { irPagina(b.dataset.ir); };
+  });
+  $('atras').onclick = function () { irPagina('inicio'); };
+  function abrirAjustes() { rellenar(cfg); irPagina('inicio'); $('ajustes').classList.add('ver'); }
   $('anadir').onclick = function () { $('filas').appendChild(fila({})); };
   $('restaurar').onclick = function () { rellenar(copia(DEF)); };
   $('listo').onclick = function () {
@@ -525,7 +592,16 @@
     img.src = url;
   };
 
-  if (navigator.standalone === false) $('aviso-safari').style.display = 'block';
+  // Aviso de atajo que falta
+  var falta = new URLSearchParams(location.search).get('falta');
+  if (falta) {
+    $('nombre-atajo').textContent = falta;
+    $('error-atajo').style.display = 'block';
+    history.replaceState(null, '', location.pathname);
+  }
+  $('cerrar-error').onclick = function () { $('error-atajo').style.display = 'none'; };
+
+  if (navigator.standalone === false && !falta) $('aviso-safari').style.display = 'block';
   pintar();
   reloj();
   aplicarTema();
