@@ -38,7 +38,7 @@ cualquier nombre de la lista.
 
 ### Temas (ajustes → Tema)
 - **Ámbar:** el diseño propio de la app (pantalla ámbar, rueda giratoria y botones). Encaja en cualquier iPhone.
-- **Claro:** como Ámbar, pero con la pantalla blanca, el resaltado en gris oscuro, la hora centrada arriba y la
+- **Claro:** como Ámbar, pero con la pantalla blanca, el resaltado en gris oscuro, tu texto centrado arriba y la
   rueda gris oscura sin líneas. El **color de fondo** lo eliges en ajustes (plata, negro, rojo, azul, verde, rosa
   o cualquier otro con el selector). Se usa igual que Ámbar.
 - **Mi foto:** pon de fondo una imagen con una pantalla arriba y una rueda abajo. La lista aparece dentro de la
@@ -65,7 +65,7 @@ Para volver al diseño propio: doble toque en **menú** → **Ámbar** → Listo
 Primero aparece un menú con apartados; toca uno para entrar y **‹ Menú** para volver. **Listo** guarda y cierra.
 - **Mi lista:** cambiar, añadir o quitar botones. Pega tal cual un enlace copiado con *Compartir → Copiar enlace*
   (una lista de Spotify, un canal o vídeo de YouTube, un podcast de Podimo). **Restaurar** vuelve a los tres de siempre.
-- **Tema y colores:** Ámbar, Claro o Mi foto; color de énfasis (Ámbar) y color de fondo (Claro).
+- **Tema y colores:** Ámbar, Claro o Mi foto; **texto de la pantalla** (el que sale arriba, por defecto "Maria"); color de énfasis (Ámbar) y color de fondo (Claro).
 - **Atajos:** botones para instalar los atajos y para qué sirve cada uno.
 - **Ayuda:** este documento.
 
@@ -160,5 +160,4 @@ Concentración → +) que muestre solo esa página y actívala desde "Modo iPod"
 | He perdido la foto de fondo | Se borra si borras el icono o los datos de Safari: vuelve a pulsar **Elegir foto**. |
 
 ## Batería
-La app no hace nada por su cuenta: sin animaciones continuas, sin conexiones y con el reloj actualizándose una vez
-por minuto. iOS la congela en cuanto abres Spotify, YouTube o Podimo.
+La app no hace nada por su cuenta: sin animaciones continuas, sin conexiones y sin nada que se actualice solo. iOS la congela en cuanto abres Spotify, YouTube o Podimo.
