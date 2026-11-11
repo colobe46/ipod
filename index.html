@@ -24,7 +24,7 @@
   #reloj { display: flex; align-items: baseline; justify-content: space-between; }
   #hora  { font-size: 44px; font-weight: 200; letter-spacing: -1px; line-height: 1; }
   #fecha { font-size: 13px; color: #8e8e93; }
-  #titulo { font: 12px ui-monospace, Menlo, monospace; color: #8e8e93; margin: 20px 0 6px; min-height: 15px; }
+  #lista { margin-top: 24px; }
 
   #lista { flex: 1; overflow-y: auto; scrollbar-width: none; }
   #lista::-webkit-scrollbar { display: none; }
@@ -41,8 +41,6 @@
   .et { position: absolute; font: 11px ui-monospace, Menlo, monospace; color: #8e8e93; pointer-events: none; }
   .arriba { top: 11%; left: 50%; transform: translateX(-50%); }
   .abajo  { bottom: 11%; left: 50%; transform: translateX(-50%); }
-  .izq    { left: 7%; top: 50%; transform: translateY(-50%); }
-  .der    { right: 7%; top: 50%; transform: translateY(-50%); }
 
   /* Ajustes */
   #ajustes { display: none; position: fixed; inset: 0; background: #000; overflow-y: auto; box-sizing: border-box;
@@ -74,14 +72,11 @@
   <div id="hora">--:--</div>
   <div id="fecha"></div>
 </header>
-<div id="titulo"></div>
 <main id="lista"></main>
 
 <div id="rueda" aria-label="Rueda: gira para moverte, toca el centro para abrir">
   <span class="et arriba">ajustes</span>
-  <span class="et izq">dormir</span>
-  <span class="et der">ahorro</span>
-  <span class="et abajo">volver</span>
+  <span class="et abajo">ahorro</span>
   <a id="centro" href="#" aria-label="Abrir"></a>
 </div>
 
@@ -99,8 +94,6 @@
   </div>
   <label for="atajo-modo">Atajo de ahorro (modo iPod)</label>
   <input id="atajo-modo" autocapitalize="off" autocorrect="off">
-  <label for="atajo-dormir">Atajo para dormir</label>
-  <input id="atajo-dormir" autocapitalize="off" autocorrect="off">
 </section>
 
 <script>
@@ -115,8 +108,7 @@
       { n: 'YouTube', u: 'https://www.youtube.com/' },
       { n: 'Podimo',  u: 'https://open.podimo.com/' }
     ],
-    modo: 'Modo iPod',
-    dormir: 'Dormir'
+    modo: 'Modo iPod'
   };
   function copia(o) { return JSON.parse(JSON.stringify(o)); }
   function cargar() {
@@ -137,41 +129,29 @@
   // ---------- Enlaces ----------
   // Todo se abre con enlaces reales (<a href>) tocados con el dedo: es lo que
   // permite a iOS abrir la app directamente, sin el aviso "¿Abrir en…?".
-  function urlAtajo(nombre, texto) {
-    var u = 'shortcuts://run-shortcut?name=' + encodeURIComponent(nombre);
-    if (texto) u += '&input=text&text=' + encodeURIComponent(texto);
-    return u;
+  function urlAtajo(nombre) {
+    return 'shortcuts://run-shortcut?name=' + encodeURIComponent(nombre);
   }
-  function enlace(b) { return menu === 'dormir' ? urlAtajo(cfg.dormir, String(b.min)) : b.u; }
-  function alPulsar() { if (menu === 'dormir') setTimeout(volver, 800); }
 
-  // ---------- Menús ----------
-  var menu = 'principal';
+  // ---------- Lista ----------
   var sel = 0;
-  function elementos() {
-    if (menu === 'dormir') return [
-      { n: '15 minutos', min: 15 }, { n: '30 minutos', min: 30 }, { n: '60 minutos', min: 60 }
-    ];
-    return cfg.botones;
-  }
+  function elementos() { return cfg.botones; }
   function pintar() {
     var l = $('lista'), els = elementos();
-    $('titulo').textContent = menu === 'dormir' ? 'dormir en…' : '';
     l.textContent = '';
     if (sel >= els.length) sel = Math.max(0, els.length - 1);
     els.forEach(function (b, i) {
       var a = document.createElement('a');
-      a.href = enlace(b);
+      a.href = b.u;
       a.textContent = b.n;
       if (i === sel) a.className = 'sel';
-      a.onclick = alPulsar;
       l.appendChild(a);
     });
     centro();
   }
   function centro() {
     var b = elementos()[sel];
-    $('centro').href = b ? enlace(b) : '#';
+    $('centro').href = b ? b.u : '#';
   }
   function mover(paso) {
     var n = elementos().length;
@@ -186,14 +166,12 @@
     centro();
   }
   $('centro').onclick = function (e) {
-    if ($('centro').getAttribute('href') === '#') e.preventDefault(); else alPulsar();
+    if ($('centro').getAttribute('href') === '#') e.preventDefault();
   };
-  function volver() { if (menu !== 'principal') { menu = 'principal'; sel = 0; pintar(); } }
-  function irDormir() { menu = 'dormir'; sel = 1; pintar(); }
 
   // ---------- Rueda ----------
   // Girar mueve la selección (un paso cada 24°). Tocar: centro = abrir,
-  // arriba = ajustes, izquierda = dormir, derecha = ahorro, abajo = volver.
+  // arriba = ajustes, abajo = ahorro.
   var rueda = $('rueda');
   var PASO = 24, g = null;
 
@@ -228,9 +206,7 @@
     if (giro || centro) return;                  // el toque en el centro lo abre el propio enlace
     var a = p.ang;                               // 0° = derecha, 90° = abajo
     if (a > -135 && a < -45) abrirAjustes();
-    else if (a >= -45 && a <= 45) location.href = urlAtajo(cfg.modo);
-    else if (a > 45 && a < 135) volver();
-    else irDormir();
+    else if (a > 45 && a < 135) location.href = urlAtajo(cfg.modo);
   }
   rueda.addEventListener('pointerup', soltar);
   rueda.addEventListener('pointercancel', function () { rueda.classList.remove('pulsado-centro'); g = null; });
@@ -245,7 +221,7 @@
     t = setTimeout(reloj, 60000 - d.getSeconds() * 1000 - d.getMilliseconds() + 50);
   }
   document.addEventListener('visibilitychange', function () {
-    if (document.hidden) clearTimeout(t); else { reloj(); volver(); }
+    if (document.hidden) clearTimeout(t); else reloj();
   });
 
   // ---------- Ajustes ----------
@@ -269,7 +245,6 @@
     f.textContent = '';
     c.botones.forEach(function (b) { f.appendChild(fila(b)); });
     $('atajo-modo').value = c.modo;
-    $('atajo-dormir').value = c.dormir;
   }
   function abrirAjustes() { rellenar(cfg); $('ajustes').scrollTop = 0; $('ajustes').classList.add('ver'); }
 
@@ -282,9 +257,8 @@
       return b;
     }).filter(function (b) { return b.n && b.u; });
     cfg.modo = $('atajo-modo').value.trim() || DEF.modo;
-    cfg.dormir = $('atajo-dormir').value.trim() || DEF.dormir;
     guardar();
-    menu = 'principal'; sel = 0;
+    sel = 0;
     pintar();
     $('ajustes').classList.remove('ver');
   };
