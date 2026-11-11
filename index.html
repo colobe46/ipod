@@ -32,9 +32,18 @@
     padding: 9px 14px; margin: 0 -14px; border-radius: 8px; }
   #lista a.sel { background: #1f1f1f; }
 
+  /* Fondo con foto */
+  body.con-fondo { background: #000 center / cover no-repeat; }
+  body.con-fondo #reloj, body.con-fondo #lista a, body.con-fondo .et { text-shadow: 0 1px 4px rgba(0,0,0,.8); }
+  body.con-fondo #fecha, body.con-fondo .et { color: #ddd; }
+  body.con-fondo #lista a.sel { background: rgba(0,0,0,.5); }
+  body.sin-rueda #rueda, body.sin-rueda #centro { border-color: transparent; }
+  body.sin-rueda .et { visibility: hidden; }
+  body.sin-rueda #rueda.pulsado-centro #centro { background: rgba(255,255,255,.12); }
+
   /* Rueda */
   #rueda { position: relative; flex: none; align-self: center; margin-top: 18px;
-    width: min(74vw, 290px); aspect-ratio: 1; border-radius: 50%;
+    width: var(--tam, min(74vw, 290px)); aspect-ratio: 1; margin-bottom: var(--sube, 0px); border-radius: 50%;
     border: 1px solid #2c2c2e; touch-action: none; }
   #centro { position: absolute; inset: 31%; border-radius: 50%; border: 1px solid #2c2c2e; }
   #rueda.pulsado-centro #centro { background: #141414; }
@@ -63,6 +72,9 @@
   .quitar { grid-row: span 2; border: none; color: #8e8e93; font-size: 26px; padding: 0 4px; }
   .botones { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0; }
   label { display: block; color: #8e8e93; font-size: 13px; margin: 16px 0 6px; }
+  input[type=range] { padding: 0; border: none; background: none; accent-color: #fff; }
+  .interruptor { display: flex; align-items: center; gap: 10px; color: #fff; font-size: 15px; }
+  .interruptor input { width: 22px; height: 22px; margin: 0; accent-color: #fff; }
   .ayuda { color: #8e8e93; font-size: 13px; line-height: 1.5; margin-top: 16px; }
 </style>
 </head>
@@ -92,6 +104,19 @@
     <button id="anadir">Añadir botón</button>
     <button id="restaurar">Restaurar</button>
   </div>
+  <label>Fondo</label>
+  <div class="botones" style="margin-top:0">
+    <button id="elegir-fondo">Elegir foto</button>
+    <button id="quitar-fondo">Quitar fondo</button>
+  </div>
+  <input id="archivo-fondo" type="file" accept="image/*" style="display:none">
+  <label class="interruptor"><input id="dibujar-rueda" type="checkbox"> Dibujar la rueda</label>
+  <p class="ayuda" style="margin-top:4px">Desactívalo si tu foto ya trae una rueda dibujada: la rueda seguirá funcionando igual.</p>
+  <label for="tam-rueda">Tamaño de la rueda</label>
+  <input id="tam-rueda" type="range" min="40" max="100" step="1">
+  <label for="sube-rueda">Altura de la rueda</label>
+  <input id="sube-rueda" type="range" min="0" max="400" step="2">
+  <p class="ayuda" style="margin-top:4px">Ajústalos y pulsa Listo para ver cómo encaja con tu foto.</p>
   <label for="atajo-modo">Atajo de ahorro (modo iPod)</label>
   <input id="atajo-modo" autocapitalize="off" autocorrect="off">
 </section>
@@ -253,11 +278,17 @@
     f.textContent = '';
     c.botones.forEach(function (b) { f.appendChild(fila(b)); });
     $('atajo-modo').value = c.modo;
+    $('dibujar-rueda').checked = c.rueda !== false;
+    $('tam-rueda').value = c.rTam || 74;
+    $('sube-rueda').value = c.rSube || 0;
   }
   function abrirAjustes() { rellenar(cfg); $('ajustes').scrollTop = 0; $('ajustes').classList.add('ver'); }
 
   $('anadir').onclick = function () { $('filas').appendChild(fila({})); };
-  $('restaurar').onclick = function () { rellenar(copia(DEF)); };
+  $('restaurar').onclick = function () {
+    var d = copia(DEF); d.rueda = cfg.rueda; d.rTam = cfg.rTam; d.rSube = cfg.rSube;
+    rellenar(d);
+  };
   $('listo').onclick = function () {
     cfg.botones = Array.prototype.map.call($('filas').children, function (d) {
       var b = { n: d.querySelector('.n').value.trim(), u: d.querySelector('.u').value.trim() };
@@ -265,14 +296,64 @@
       return b;
     }).filter(function (b) { return b.n && b.u; });
     cfg.modo = $('atajo-modo').value.trim() || DEF.modo;
+    cfg.rueda = $('dibujar-rueda').checked;
+    cfg.rTam = +$('tam-rueda').value;
+    cfg.rSube = +$('sube-rueda').value;
+    aplicarAspecto();
     guardar();
     sel = 0;
     pintar();
     $('ajustes').classList.remove('ver');
   };
 
+  // ---------- Fondo: foto del carrete, guardada solo en este iPhone ----------
+  function fondoGuardado() { try { return localStorage.getItem('ipod-fondo'); } catch (e) { return null; } }
+  function aplicarAspecto() {
+    var f = fondoGuardado();
+    document.body.classList.toggle('con-fondo', !!f);
+    document.body.style.backgroundImage = f ? 'url(' + f + ')' : '';
+    document.body.classList.toggle('sin-rueda', cfg.rueda === false);
+    var r = $('rueda').style;
+    if (cfg.rTam) r.setProperty('--tam', cfg.rTam + 'vw'); else r.removeProperty('--tam');
+    r.setProperty('--sube', (cfg.rSube || 0) + 'px');
+  }
+  $('elegir-fondo').onclick = function () { $('archivo-fondo').click(); };
+  $('quitar-fondo').onclick = function () {
+    try { localStorage.removeItem('ipod-fondo'); } catch (e) {}
+    aplicarAspecto();
+  };
+  $('archivo-fondo').onchange = function () {
+    var archivo = this.files && this.files[0];
+    this.value = '';
+    if (!archivo) return;
+    var img = new Image(), url = URL.createObjectURL(archivo);
+    img.onload = function () {
+      // Se reduce al tamaño de la pantalla para que ocupe poco y cargue al instante.
+      var maxAncho = Math.round(screen.width * (window.devicePixelRatio || 2));
+      var esc = Math.min(1, maxAncho / img.width);
+      var c = document.createElement('canvas');
+      c.width = Math.round(img.width * esc); c.height = Math.round(img.height * esc);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      var calidades = [0.85, 0.7, 0.55], guardado = false;
+      for (var i = 0; i < calidades.length && !guardado; i++) {
+        try { localStorage.setItem('ipod-fondo', c.toDataURL('image/jpeg', calidades[i])); guardado = true; } catch (e) {}
+      }
+      if (!guardado) alertaFondo();
+      aplicarAspecto();
+    };
+    img.src = url;
+  };
+  function alertaFondo() {
+    var p = document.createElement('p');
+    p.className = 'ayuda'; p.style.color = '#ff6b6b';
+    p.textContent = 'La foto es demasiado grande para guardarla. Prueba con otra.';
+    $('elegir-fondo').parentNode.after(p);
+  }
+
   pintar();
   reloj();
+  aplicarAspecto();
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 })();
 </script>
