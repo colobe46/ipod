@@ -1,6 +1,6 @@
 // Guarda la página en el iPhone: abre al instante y funciona sin internet.
 // Si hay conexión, descarga la versión nueva en segundo plano para la próxima vez.
-const CACHE = 'ipod-v3';
+const CACHE = 'ipod-v4';
 const ARCHIVOS = ['./', 'index.html', 'manifest.json', 'icon.png'];
 
 self.addEventListener('install', e => {

@@ -82,7 +82,7 @@
   <span class="et izq">dormir</span>
   <span class="et der">ahorro</span>
   <span class="et abajo">volver</span>
-  <div id="centro"></div>
+  <a id="centro" href="#" aria-label="Abrir"></a>
 </div>
 
 <section id="ajustes">
@@ -90,8 +90,8 @@
     <h2>Ajustes</h2>
     <button id="listo">Listo</button>
   </div>
-  <p class="ayuda">Pega un enlace de Spotify, YouTube o Podimo (Compartir → Copiar enlace).
-    Los de Spotify y YouTube se abren directamente en la app.</p>
+  <p class="ayuda">Pega tal cual un enlace de Spotify, YouTube o Podimo (Compartir → Copiar enlace):
+    se abrirá directamente en su app.</p>
   <div id="filas"></div>
   <div class="botones">
     <button id="anadir">Añadir botón</button>
@@ -109,45 +109,41 @@
 
   // ---------- Configuración guardada en el iPhone ----------
   var DEF = {
+    // Enlaces web normales: iOS los pasa a la app sin preguntar "¿Abrir en…?".
     botones: [
-      { n: 'Spotify', u: 'spotify://' },
-      { n: 'YouTube', u: 'youtube://' },
-      { n: 'Podimo',  u: 'podimo://', w: 'https://podimo.com' }
+      { n: 'Spotify', u: 'https://open.spotify.com/' },
+      { n: 'YouTube', u: 'https://www.youtube.com/' },
+      { n: 'Podimo',  u: 'https://open.podimo.com/' }
     ],
     modo: 'Modo iPod',
     dormir: 'Dormir'
   };
   function copia(o) { return JSON.parse(JSON.stringify(o)); }
   function cargar() {
-    try { var c = JSON.parse(localStorage.getItem('ipod')); if (c && c.botones) return c; } catch (e) {}
+    try {
+      var c = JSON.parse(localStorage.getItem('ipod'));
+      if (c && c.botones) {
+        // Cambia los enlaces antiguos (spotify://…), que hacían preguntar a iOS, por los web.
+        var viejos = { 'spotify://': DEF.botones[0].u, 'youtube://': DEF.botones[1].u, 'podimo://': DEF.botones[2].u };
+        c.botones.forEach(function (b) { if (viejos[b.u]) b.u = viejos[b.u]; delete b.w; });
+        return c;
+      }
+    } catch (e) {}
     return copia(DEF);
   }
   function guardar() { try { localStorage.setItem('ipod', JSON.stringify(cfg)); } catch (e) {} }
   var cfg = cargar();
 
-  // ---------- Abrir apps y atajos ----------
-  function aApp(u) {
-    var m;
-    if ((m = u.match(/open\.spotify\.com\/(?:intl-[a-z]+\/)?(playlist|album|artist|track|show|episode)\/([A-Za-z0-9]+)/)))
-      return 'spotify:' + m[1] + ':' + m[2];
-    if ((m = u.match(/^https?:\/\/(?:www\.|m\.)?youtube\.com(\/.*)?$/)))
-      return 'youtube://www.youtube.com' + (m[1] || '/');
-    if ((m = u.match(/^https?:\/\/youtu\.be\/([\w-]+)/)))
-      return 'youtube://www.youtube.com/watch?v=' + m[1];
-    return u;
-  }
-  function abrir(b) {
-    var destino = aApp(b.u);
-    location.href = destino;
-    if (/^https?:/i.test(destino)) return;
-    var web = /^https?:/i.test(b.u) ? b.u : (b.w || '');
-    if (web) setTimeout(function () { if (!document.hidden) location.href = web; }, 1500);
-  }
-  function atajo(nombre, texto) {
+  // ---------- Enlaces ----------
+  // Todo se abre con enlaces reales (<a href>) tocados con el dedo: es lo que
+  // permite a iOS abrir la app directamente, sin el aviso "¿Abrir en…?".
+  function urlAtajo(nombre, texto) {
     var u = 'shortcuts://run-shortcut?name=' + encodeURIComponent(nombre);
     if (texto) u += '&input=text&text=' + encodeURIComponent(texto);
-    location.href = u;
+    return u;
   }
+  function enlace(b) { return menu === 'dormir' ? urlAtajo(cfg.dormir, String(b.min)) : b.u; }
+  function alPulsar() { if (menu === 'dormir') setTimeout(volver, 800); }
 
   // ---------- Menús ----------
   var menu = 'principal';
@@ -165,12 +161,17 @@
     if (sel >= els.length) sel = Math.max(0, els.length - 1);
     els.forEach(function (b, i) {
       var a = document.createElement('a');
-      a.href = '#';
+      a.href = enlace(b);
       a.textContent = b.n;
       if (i === sel) a.className = 'sel';
-      a.onclick = function (e) { e.preventDefault(); sel = i; elegir(); };
+      a.onclick = alPulsar;
       l.appendChild(a);
     });
+    centro();
+  }
+  function centro() {
+    var b = elementos()[sel];
+    $('centro').href = b ? enlace(b) : '#';
   }
   function mover(paso) {
     var n = elementos().length;
@@ -182,13 +183,11 @@
     sel = nuevo;
     as[sel].className = 'sel';
     as[sel].scrollIntoView({ block: 'nearest' });
+    centro();
   }
-  function elegir() {
-    var b = elementos()[sel];
-    if (!b) return;
-    if (menu === 'dormir') { atajo(cfg.dormir, String(b.min)); volver(); }
-    else abrir(b);
-  }
+  $('centro').onclick = function (e) {
+    if ($('centro').getAttribute('href') === '#') e.preventDefault(); else alPulsar();
+  };
   function volver() { if (menu !== 'principal') { menu = 'principal'; sel = 0; pintar(); } }
   function irDormir() { menu = 'dormir'; sel = 1; pintar(); }
 
@@ -205,9 +204,10 @@
   }
   rueda.addEventListener('pointerdown', function (e) {
     var p = geo(e);
-    rueda.setPointerCapture(e.pointerId);
     g = { ang: p.ang, acum: 0, total: 0, centro: p.dist < p.radio * 0.38, inicio: p };
+    // En el centro no se captura el dedo, para que el toque llegue al enlace tal cual.
     if (g.centro) rueda.classList.add('pulsado-centro');
+    else rueda.setPointerCapture(e.pointerId);
   });
   rueda.addEventListener('pointermove', function (e) {
     if (!g) return;
@@ -225,11 +225,10 @@
     var giro = g.total > 10, p = g.inicio;
     var centro = g.centro;
     g = null;
-    if (giro) return;
-    if (centro) return elegir();
+    if (giro || centro) return;                  // el toque en el centro lo abre el propio enlace
     var a = p.ang;                               // 0° = derecha, 90° = abajo
     if (a > -135 && a < -45) abrirAjustes();
-    else if (a >= -45 && a <= 45) atajo(cfg.modo);
+    else if (a >= -45 && a <= 45) location.href = urlAtajo(cfg.modo);
     else if (a > 45 && a < 135) volver();
     else irDormir();
   }
