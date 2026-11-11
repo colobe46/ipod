@@ -88,7 +88,7 @@ En la lista principal, **Mi música** reproduce tus propios archivos (MP3, M4A�
 > leerla. Si pasa mucho rato con la pantalla bloqueada, iOS puede cortar el sonido de las apps web.
 
 ## Tendencias
-**Tendencias** muestra las 25 canciones más escuchadas en España (lista pública de Apple Music, se actualiza sola cada
+**Tendencias** muestra las 25 canciones más escuchadas en tu país (lista de éxitos de Deezer; si falla, la de Apple Music). Se actualiza sola cada
 12 horas; *↻ Sincronizar* la pide al momento). Al elegir una se abre en **Spotify**, donde puedes guardarla y
 descargarla para escucharla sin conexión.
 

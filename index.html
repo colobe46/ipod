@@ -794,7 +794,7 @@
     });
   }
 
-  // ---------- Tendencias: lo más escuchado en España (lista pública de Apple, sin clave) ----------
+  // ---------- Tendencias: lo más escuchado en tu país (Deezer; Apple de reserva) ----------
   var tendencias = null, fechaTend = '', estadoTend = '';
   function cargarTendencias() {
     try {
@@ -803,8 +803,37 @@
       if (!c || Date.now() - c.t > 12 * 3600 * 1000) sincronizarTendencias();
     } catch (e) { sincronizarTendencias(); }
   }
+  // Deezer permite leer su lista de éxitos desde cualquier web (JSONP). Su lista "0" es la del país
+  // desde el que se conecta (España, en tu caso).
+  function tendenciasDeezer() {
+    return new Promise(function (ok, ko) {
+      var nombre = '__tend' + Date.now(), sc = document.createElement('script');
+      var fin = setTimeout(function () { limpiar(); ko(new Error('tiempo')); }, 9000);
+      function limpiar() { clearTimeout(fin); try { delete window[nombre]; } catch (e) { window[nombre] = undefined; } sc.remove(); }
+      window[nombre] = function (j) {
+        limpiar();
+        if (!j || !j.data || !j.data.length) return ko(new Error('vacía'));
+        ok(j.data.map(function (x) { return { n: x.title, a: x.artist && x.artist.name || '' }; }));
+      };
+      sc.onerror = function () { limpiar(); ko(new Error('red')); };
+      sc.src = 'https://api.deezer.com/chart/0/tracks?limit=25&output=jsonp&callback=' + nombre;
+      document.head.appendChild(sc);
+    });
+  }
+  function guardarTendencias(lista) {
+    tendencias = lista;
+    var ahora = Date.now();
+    try { localStorage.setItem('ipod-tend', JSON.stringify({ t: ahora, l: tendencias })); } catch (e) {}
+    fechaTend = new Date(ahora).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+    estadoTend = '';
+    if (vista === 'tendencias') pintar();
+  }
   function sincronizarTendencias() {
     estadoTend = 'Sincronizando…'; if (vista === 'tendencias') pintar();
+    if (!navigator.onLine) { estadoTend = 'Sin conexión. Toca para reintentar'; if (vista === 'tendencias') pintar(); return; }
+    tendenciasDeezer().then(guardarTendencias).catch(function () { sincronizarApple(); });
+  }
+  function sincronizarApple() {
     var fuentes = ['https://rss.applemarketingtools.com/api/v2/es/music/most-played/25/songs.json',
                    'https://rss.marketingtools.apple.com/api/v2/es/music/most-played/25/songs.json'];
     (function probar(i) {
@@ -813,12 +842,7 @@
         if (vista === 'tendencias') pintar(); return;
       }
       fetch(fuentes[i], { cache: 'no-store' }).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (j) {
-        tendencias = j.feed.results.map(function (x) { return { n: x.name, a: x.artistName }; });
-        var ahora = Date.now();
-        try { localStorage.setItem('ipod-tend', JSON.stringify({ t: ahora, l: tendencias })); } catch (e) {}
-        fechaTend = new Date(ahora).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
-        estadoTend = '';
-        if (vista === 'tendencias') pintar();
+        guardarTendencias(j.feed.results.map(function (x) { return { n: x.name, a: x.artistName }; }));
       }).catch(function () { probar(i + 1); });
     })(0);
   }
