@@ -32,6 +32,10 @@
     padding: 9px 14px; margin: 0 -14px; border-radius: 8px; }
   #lista a.sel { background: #1f1f1f; }
 
+  #aviso-safari { position: fixed; z-index: 2; left: 12px; right: 12px; top: calc(env(safe-area-inset-top) + 8px);
+    background: #1c1c1e; color: #fff; font-size: 14px; line-height: 1.45; padding: 12px 14px; border-radius: 10px;
+    border: 1px solid #3a3a3c; }
+
   /* Fondo con foto */
   body.con-fondo { background: #000 center / cover no-repeat; }
   body.con-fondo #reloj, body.con-fondo #lista a, body.con-fondo .et { text-shadow: 0 1px 4px rgba(0,0,0,.8); }
@@ -96,6 +100,10 @@
 </head>
 <body>
 
+<div id="aviso-safari" style="display:none">
+  Estás en Safari. Para verla a pantalla completa: Compartir → Añadir a pantalla de inicio →
+  activa <b>Abrir como app web</b> → Añadir, y ábrela desde ese icono.
+</div>
 <header id="reloj">
   <div id="hora">--:--</div>
   <div id="fecha"></div>
@@ -395,6 +403,9 @@
     p.textContent = 'La foto es demasiado grande para guardarla. Prueba con otra.';
     $('elegir-fondo').parentNode.after(p);
   }
+
+  // Aviso si se abre dentro de Safari en vez de como app web (solo en iPhone).
+  if (navigator.standalone === false) $('aviso-safari').style.display = 'block';
 
   pintar();
   reloj();
