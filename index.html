@@ -15,37 +15,46 @@
   html, body { margin: 0; height: 100%; background: #000; color: #fff;
     font-family: -apple-system, system-ui, sans-serif;
     -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
-    -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
+    -webkit-tap-highlight-color: transparent; overscroll-behavior: none; overflow: hidden; }
   body { display: flex; flex-direction: column; box-sizing: border-box;
-    padding: calc(env(safe-area-inset-top) + 28px) 32px calc(env(safe-area-inset-bottom) + 20px); }
+    padding: calc(env(safe-area-inset-top) + 20px) 28px calc(env(safe-area-inset-bottom) + 24px); }
   a { color: #fff; text-decoration: none; display: block; }
-  a:active { color: #555; }
 
-  #hora  { font-size: 64px; font-weight: 200; letter-spacing: -2px; line-height: 1; }
-  #fecha { font-size: 15px; color: #8e8e93; margin-top: 8px; }
+  /* Pantalla superior */
+  #reloj { display: flex; align-items: baseline; justify-content: space-between; }
+  #hora  { font-size: 44px; font-weight: 200; letter-spacing: -1px; line-height: 1; }
+  #fecha { font-size: 13px; color: #8e8e93; }
+  #titulo { font: 12px ui-monospace, Menlo, monospace; color: #8e8e93; margin: 20px 0 6px; min-height: 15px; }
 
-  #lista { flex: 1; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; }
-  #lista a { font-size: 42px; font-weight: 200; letter-spacing: -0.5px; padding: 10px 0; }
-  #lista.muchos a { font-size: 32px; padding: 8px 0; }
+  #lista { flex: 1; overflow-y: auto; scrollbar-width: none; }
+  #lista::-webkit-scrollbar { display: none; }
+  #lista a { font-size: 32px; font-weight: 300; letter-spacing: -0.3px;
+    padding: 9px 14px; margin: 0 -14px; border-radius: 8px; }
+  #lista a.sel { background: #1f1f1f; }
 
-  #pie { display: flex; gap: 26px; font: 13px ui-monospace, Menlo, monospace; }
-  #pie a { color: #8e8e93; padding: 8px 0; }
-  #pie a:active { color: #fff; }
-  #dormir-op { display: none; gap: 18px; }
-  #dormir-op.ver { display: flex; }
-  #dormir-op a { color: #fff !important; }
+  /* Rueda */
+  #rueda { position: relative; flex: none; align-self: center; margin-top: 18px;
+    width: min(74vw, 290px); aspect-ratio: 1; border-radius: 50%;
+    border: 1px solid #2c2c2e; touch-action: none; }
+  #centro { position: absolute; inset: 31%; border-radius: 50%; border: 1px solid #2c2c2e; }
+  #rueda.pulsado-centro #centro { background: #141414; }
+  .et { position: absolute; font: 11px ui-monospace, Menlo, monospace; color: #8e8e93; pointer-events: none; }
+  .arriba { top: 11%; left: 50%; transform: translateX(-50%); }
+  .abajo  { bottom: 11%; left: 50%; transform: translateX(-50%); }
+  .izq    { left: 7%; top: 50%; transform: translateY(-50%); }
+  .der    { right: 7%; top: 50%; transform: translateY(-50%); }
 
+  /* Ajustes */
   #ajustes { display: none; position: fixed; inset: 0; background: #000; overflow-y: auto; box-sizing: border-box;
-    padding: calc(env(safe-area-inset-top) + 20px) 24px calc(env(safe-area-inset-bottom) + 24px); }
+    padding: calc(env(safe-area-inset-top) + 20px) 24px calc(env(safe-area-inset-bottom) + 24px);
+    overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
   #ajustes.ver { display: block; }
-  #ajustes { -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
   .cabecera { position: sticky; top: calc(-1 * (env(safe-area-inset-top) + 20px)); z-index: 1; background: #000;
     display: flex; align-items: center; justify-content: space-between;
     margin: calc(-1 * (env(safe-area-inset-top) + 20px)) -24px 0;
     padding: calc(env(safe-area-inset-top) + 20px) 24px 12px; border-bottom: 1px solid #222; }
   #ajustes h2 { font-size: 28px; font-weight: 300; margin: 0; }
   #listo { border-color: #fff; }
-  #ajustes .ayuda:first-of-type { margin-top: 16px; }
   .fila { display: grid; grid-template-columns: 1fr auto; gap: 6px 8px; padding: 12px 0; border-bottom: 1px solid #222; }
   input { width: 100%; box-sizing: border-box; background: #111; border: 1px solid #333; border-radius: 6px;
     color: #fff; font: 16px -apple-system, system-ui, sans-serif; padding: 10px;
@@ -56,7 +65,7 @@
   .quitar { grid-row: span 2; border: none; color: #8e8e93; font-size: 26px; padding: 0 4px; }
   .botones { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0; }
   label { display: block; color: #8e8e93; font-size: 13px; margin: 16px 0 6px; }
-  .ayuda { color: #8e8e93; font-size: 13px; line-height: 1.5; }
+  .ayuda { color: #8e8e93; font-size: 13px; line-height: 1.5; margin-top: 16px; }
 </style>
 </head>
 <body>
@@ -65,16 +74,16 @@
   <div id="hora">--:--</div>
   <div id="fecha"></div>
 </header>
-
+<div id="titulo"></div>
 <main id="lista"></main>
 
-<footer id="pie">
-  <a href="#" id="modo">modo iPod</a>
-  <a href="#" id="dormir">dormir</a>
-  <span id="dormir-op">
-    <a href="#" data-min="15">15</a><a href="#" data-min="30">30</a><a href="#" data-min="60">60</a>
-  </span>
-</footer>
+<div id="rueda" aria-label="Rueda: gira para moverte, toca el centro para abrir">
+  <span class="et arriba">ajustes</span>
+  <span class="et izq">dormir</span>
+  <span class="et der">ahorro</span>
+  <span class="et abajo">volver</span>
+  <div id="centro"></div>
+</div>
 
 <section id="ajustes">
   <div class="cabecera">
@@ -88,7 +97,7 @@
     <button id="anadir">Añadir botón</button>
     <button id="restaurar">Restaurar</button>
   </div>
-  <label for="atajo-modo">Atajo del modo iPod</label>
+  <label for="atajo-modo">Atajo de ahorro (modo iPod)</label>
   <input id="atajo-modo" autocapitalize="off" autocorrect="off">
   <label for="atajo-dormir">Atajo para dormir</label>
   <input id="atajo-dormir" autocapitalize="off" autocorrect="off">
@@ -116,7 +125,7 @@
   function guardar() { try { localStorage.setItem('ipod', JSON.stringify(cfg)); } catch (e) {} }
   var cfg = cargar();
 
-  // ---------- Enlaces web -> enlaces que abren la app ----------
+  // ---------- Abrir apps y atajos ----------
   function aApp(u) {
     var m;
     if ((m = u.match(/open\.spotify\.com\/(?:intl-[a-z]+\/)?(playlist|album|artist|track|show|episode)\/([A-Za-z0-9]+)/)))
@@ -127,69 +136,120 @@
       return 'youtube://www.youtube.com/watch?v=' + m[1];
     return u;
   }
-
   function abrir(b) {
     var destino = aApp(b.u);
     location.href = destino;
     if (/^https?:/i.test(destino)) return;
-    // Si la app no se abre en 1,5 s, prueba con la web.
     var web = /^https?:/i.test(b.u) ? b.u : (b.w || '');
     if (web) setTimeout(function () { if (!document.hidden) location.href = web; }, 1500);
   }
-
   function atajo(nombre, texto) {
     var u = 'shortcuts://run-shortcut?name=' + encodeURIComponent(nombre);
     if (texto) u += '&input=text&text=' + encodeURIComponent(texto);
     location.href = u;
   }
 
-  // ---------- Pantalla principal ----------
+  // ---------- Menús ----------
+  var menu = 'principal';
+  var sel = 0;
+  function elementos() {
+    if (menu === 'dormir') return [
+      { n: '15 minutos', min: 15 }, { n: '30 minutos', min: 30 }, { n: '60 minutos', min: 60 }
+    ];
+    return cfg.botones;
+  }
   function pintar() {
-    var l = $('lista');
+    var l = $('lista'), els = elementos();
+    $('titulo').textContent = menu === 'dormir' ? 'dormir en…' : '';
     l.textContent = '';
-    cfg.botones.forEach(function (b) {
+    if (sel >= els.length) sel = Math.max(0, els.length - 1);
+    els.forEach(function (b, i) {
       var a = document.createElement('a');
       a.href = '#';
       a.textContent = b.n;
-      a.onclick = function (e) { e.preventDefault(); abrir(b); };
+      if (i === sel) a.className = 'sel';
+      a.onclick = function (e) { e.preventDefault(); sel = i; elegir(); };
       l.appendChild(a);
     });
-    l.className = cfg.botones.length > 4 ? 'muchos' : '';
   }
+  function mover(paso) {
+    var n = elementos().length;
+    if (!n) return;
+    var nuevo = Math.min(n - 1, Math.max(0, sel + paso));
+    if (nuevo === sel) return;
+    var as = $('lista').children;
+    as[sel].className = '';
+    sel = nuevo;
+    as[sel].className = 'sel';
+    as[sel].scrollIntoView({ block: 'nearest' });
+  }
+  function elegir() {
+    var b = elementos()[sel];
+    if (!b) return;
+    if (menu === 'dormir') { atajo(cfg.dormir, String(b.min)); volver(); }
+    else abrir(b);
+  }
+  function volver() { if (menu !== 'principal') { menu = 'principal'; sel = 0; pintar(); } }
+  function irDormir() { menu = 'dormir'; sel = 1; pintar(); }
 
-  // Reloj: se actualiza una vez por minuto y se para con la pantalla apagada.
+  // ---------- Rueda ----------
+  // Girar mueve la selección (un paso cada 24°). Tocar: centro = abrir,
+  // arriba = ajustes, izquierda = dormir, derecha = ahorro, abajo = volver.
+  var rueda = $('rueda');
+  var PASO = 24, g = null;
+
+  function geo(e) {
+    var r = rueda.getBoundingClientRect();
+    var dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+    return { ang: Math.atan2(dy, dx) * 180 / Math.PI, dist: Math.sqrt(dx * dx + dy * dy), radio: r.width / 2 };
+  }
+  rueda.addEventListener('pointerdown', function (e) {
+    var p = geo(e);
+    rueda.setPointerCapture(e.pointerId);
+    g = { ang: p.ang, acum: 0, total: 0, centro: p.dist < p.radio * 0.38, inicio: p };
+    if (g.centro) rueda.classList.add('pulsado-centro');
+  });
+  rueda.addEventListener('pointermove', function (e) {
+    if (!g) return;
+    var p = geo(e);
+    if (p.dist < p.radio * 0.2) return;          // demasiado cerca del centro para medir el giro
+    var d = p.ang - g.ang;
+    if (d > 180) d -= 360; else if (d < -180) d += 360;
+    g.ang = p.ang; g.acum += d; g.total += Math.abs(d);
+    while (g.acum >= PASO)  { mover(1);  g.acum -= PASO; }
+    while (g.acum <= -PASO) { mover(-1); g.acum += PASO; }
+  });
+  function soltar() {
+    rueda.classList.remove('pulsado-centro');
+    if (!g) return;
+    var giro = g.total > 10, p = g.inicio;
+    var centro = g.centro;
+    g = null;
+    if (giro) return;
+    if (centro) return elegir();
+    var a = p.ang;                               // 0° = derecha, 90° = abajo
+    if (a > -135 && a < -45) abrirAjustes();
+    else if (a >= -45 && a <= 45) atajo(cfg.modo);
+    else if (a > 45 && a < 135) volver();
+    else irDormir();
+  }
+  rueda.addEventListener('pointerup', soltar);
+  rueda.addEventListener('pointercancel', function () { rueda.classList.remove('pulsado-centro'); g = null; });
+
+  // ---------- Reloj: una vez por minuto, parado con la pantalla apagada ----------
   var t;
   function reloj() {
     var d = new Date();
     $('hora').textContent = d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-    $('fecha').textContent = d.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+    $('fecha').textContent = d.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' });
     clearTimeout(t);
     t = setTimeout(reloj, 60000 - d.getSeconds() * 1000 - d.getMilliseconds() + 50);
   }
   document.addEventListener('visibilitychange', function () {
-    if (document.hidden) clearTimeout(t); else reloj();
+    if (document.hidden) clearTimeout(t); else { reloj(); volver(); }
   });
 
-  $('modo').onclick = function (e) { e.preventDefault(); atajo(cfg.modo); };
-  $('dormir').onclick = function (e) { e.preventDefault(); $('dormir-op').classList.toggle('ver'); };
-  Array.prototype.forEach.call(document.querySelectorAll('#dormir-op a'), function (a) {
-    a.onclick = function (e) {
-      e.preventDefault();
-      $('dormir-op').classList.remove('ver');
-      atajo(cfg.dormir, a.dataset.min);
-    };
-  });
-
-  // ---------- Ajustes: mantener pulsada la hora ----------
-  var pulsacion;
-  var r = $('reloj');
-  r.addEventListener('touchstart', function () { pulsacion = setTimeout(abrirAjustes, 600); }, { passive: true });
-  ['touchend', 'touchmove', 'touchcancel'].forEach(function (ev) {
-    r.addEventListener(ev, function () { clearTimeout(pulsacion); });
-  });
-  r.addEventListener('dblclick', abrirAjustes);          // en ordenador
-  r.addEventListener('contextmenu', function (e) { e.preventDefault(); });
-
+  // ---------- Ajustes ----------
   function fila(b) {
     var d = document.createElement('div');
     d.className = 'fila';
@@ -205,7 +265,6 @@
     d.appendChild(n); d.appendChild(x); d.appendChild(u);
     return d;
   }
-
   function rellenar(c) {
     var f = $('filas');
     f.textContent = '';
@@ -213,8 +272,7 @@
     $('atajo-modo').value = c.modo;
     $('atajo-dormir').value = c.dormir;
   }
-
-  function abrirAjustes() { rellenar(cfg); $('ajustes').classList.add('ver'); }
+  function abrirAjustes() { rellenar(cfg); $('ajustes').scrollTop = 0; $('ajustes').classList.add('ver'); }
 
   $('anadir').onclick = function () { $('filas').appendChild(fila({})); };
   $('restaurar').onclick = function () { rellenar(copia(DEF)); };
@@ -227,14 +285,13 @@
     cfg.modo = $('atajo-modo').value.trim() || DEF.modo;
     cfg.dormir = $('atajo-dormir').value.trim() || DEF.dormir;
     guardar();
+    menu = 'principal'; sel = 0;
     pintar();
     $('ajustes').classList.remove('ver');
   };
 
   pintar();
   reloj();
-
-  // Guarda la página en el iPhone para que funcione sin conexión.
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 })();
 </script>

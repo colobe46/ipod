@@ -5,12 +5,14 @@ Es una página web que se añade a la pantalla de inicio desde Safari, sin App S
 
 **Abrir en el iPhone:** https://colobe46.github.io/ipod/ → Safari → Compartir → *Añadir a pantalla de inicio*.
 
-## Uso
-- **Toca un nombre** para abrir esa app.
-- **Mantén pulsada la hora** para abrir los ajustes: cambiar, añadir o quitar botones.
-  Pega un enlace de *Compartir → Copiar enlace* (una lista de Spotify, un canal de YouTube, un podcast de Podimo).
-- **modo iPod** ejecuta el atajo de ahorro de batería.
-- **dormir** → 15 / 30 / 60 minutos y la música se para sola.
+## Uso: la rueda
+- **Gira el dedo** sobre la rueda para moverte por la lista. **Toca el centro** para abrir.
+- **ajustes** (arriba): cambiar, añadir o quitar botones. Pega un enlace de *Compartir → Copiar enlace*
+  (una lista de Spotify, un canal de YouTube, un podcast de Podimo).
+- **dormir** (izquierda): elige 15, 30 o 60 minutos con la rueda y la música se para sola.
+- **ahorro** (derecha): ejecuta el atajo "Modo iPod".
+- **volver** (abajo): vuelve a la lista principal.
+- También puedes tocar directamente cualquier nombre de la lista.
 
 Los ajustes se guardan en el iPhone. Configúralos desde el icono de la pantalla de inicio, no desde Safari:
 iOS guarda por separado los datos de cada uno.
