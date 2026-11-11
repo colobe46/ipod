@@ -41,6 +41,22 @@
   body.sin-rueda .et { visibility: hidden; }
   body.sin-rueda #rueda.pulsado-centro #centro { background: rgba(255,255,255,.12); }
 
+  /* Encajar con un fondo de pantalla arriba y rueda abajo */
+  body.encajar { background-size: 100% 100%; }
+  body.encajar #reloj { position: fixed; left: 6.7%; width: 87%; top: 8.2%; height: 2.4%;
+    align-items: center; justify-content: center; text-shadow: none; }
+  body.encajar #hora { font-size: 12px; font-weight: 600; letter-spacing: 0; color: #222; }
+  body.encajar #fecha { display: none; }
+  body.encajar #lista { position: fixed; left: 6.7%; width: 87%; top: 10.8%; height: 28%; margin: 0; }
+  body.encajar #lista a { color: #111; text-shadow: none; font-size: 22px; font-weight: 500;
+    padding: 7px 12px; margin: 0; border-radius: 0; }
+  body.encajar #lista a.sel { background: #3a3a3c; color: #fff; }
+  body.encajar #rueda { position: fixed; left: 50%; top: 68.7%; width: 71.3vw !important; margin: 0 !important;
+    transform: translate(-50%, -50%); border-color: transparent; }
+  body.encajar #centro { inset: 32.5%; border-color: transparent; }
+  body.encajar .et { visibility: hidden; }
+  body.encajar #rueda.pulsado-centro #centro { background: rgba(255,255,255,.12); }
+
   /* Rueda */
   #rueda { position: relative; flex: none; align-self: center; margin-top: 18px;
     width: var(--tam, min(74vw, 290px)); aspect-ratio: 1; margin-bottom: var(--sube, 0px); border-radius: 50%;
@@ -108,7 +124,11 @@
   <div class="botones" style="margin-top:0">
     <button id="elegir-fondo">Elegir foto</button>
     <button id="quitar-fondo">Quitar fondo</button>
+    <button id="descargar-fondo">Descargar fondo</button>
   </div>
+  <label class="interruptor"><input id="encajar" type="checkbox"> Encajar con el fondo</label>
+  <p class="ayuda" style="margin-top:4px">Para fondos con una pantalla arriba y una rueda abajo:
+    pone la lista dentro de la pantalla y la rueda táctil encima de la dibujada.</p>
   <input id="archivo-fondo" type="file" accept="image/*" style="display:none">
   <label class="interruptor"><input id="dibujar-rueda" type="checkbox"> Dibujar la rueda</label>
   <p class="ayuda" style="margin-top:4px">Desactívalo si tu foto ya trae una rueda dibujada: la rueda seguirá funcionando igual.</p>
@@ -204,7 +224,7 @@
 
   // ---------- Rueda ----------
   // Girar mueve la selección (un paso cada 24°). Tocar: centro = abrir,
-  // arriba = ajustes, abajo = ahorro.
+  // arriba = ajustes, abajo = ahorro, izquierda/derecha = anterior/siguiente.
   var rueda = $('rueda');
   var PASO = 24, g = null;
 
@@ -240,6 +260,8 @@
     var a = p.ang;                               // 0° = derecha, 90° = abajo
     if (a > -135 && a < -45) abrirAjustes();
     else if (a > 45 && a < 135) location.href = urlAtajo(cfg.modo);
+    else if (a >= -45 && a <= 45) mover(1);
+    else mover(-1);
   }
   rueda.addEventListener('pointerup', soltar);
   rueda.addEventListener('pointercancel', function () { rueda.classList.remove('pulsado-centro'); g = null; });
@@ -279,6 +301,7 @@
     c.botones.forEach(function (b) { f.appendChild(fila(b)); });
     $('atajo-modo').value = c.modo;
     $('dibujar-rueda').checked = c.rueda !== false;
+    $('encajar').checked = !!c.encajar;
     $('tam-rueda').value = c.rTam || 74;
     $('sube-rueda').value = c.rSube || 0;
   }
@@ -286,7 +309,7 @@
 
   $('anadir').onclick = function () { $('filas').appendChild(fila({})); };
   $('restaurar').onclick = function () {
-    var d = copia(DEF); d.rueda = cfg.rueda; d.rTam = cfg.rTam; d.rSube = cfg.rSube;
+    var d = copia(DEF); d.rueda = cfg.rueda; d.rTam = cfg.rTam; d.rSube = cfg.rSube; d.encajar = cfg.encajar;
     rellenar(d);
   };
   $('listo').onclick = function () {
@@ -297,6 +320,7 @@
     }).filter(function (b) { return b.n && b.u; });
     cfg.modo = $('atajo-modo').value.trim() || DEF.modo;
     cfg.rueda = $('dibujar-rueda').checked;
+    cfg.encajar = $('encajar').checked;
     cfg.rTam = +$('tam-rueda').value;
     cfg.rSube = +$('sube-rueda').value;
     aplicarAspecto();
@@ -313,6 +337,7 @@
     document.body.classList.toggle('con-fondo', !!f);
     document.body.style.backgroundImage = f ? 'url(' + f + ')' : '';
     document.body.classList.toggle('sin-rueda', cfg.rueda === false);
+    document.body.classList.toggle('encajar', !!(f && cfg.encajar));
     var r = $('rueda').style;
     if (cfg.rTam) r.setProperty('--tam', cfg.rTam + 'vw'); else r.removeProperty('--tam');
     r.setProperty('--sube', (cfg.rSube || 0) + 'px');
@@ -344,6 +369,26 @@
     };
     img.src = url;
   };
+  $('descargar-fondo').onclick = function () {
+    var f = fondoGuardado();
+    if (!f) { avisoFondo('Primero elige una foto de fondo.'); return; }
+    fetch(f).then(function (r) { return r.blob(); }).then(function (blob) {
+      var archivo = new File([blob], 'fondo-ipod.jpg', { type: 'image/jpeg' });
+      if (navigator.canShare && navigator.canShare({ files: [archivo] })) {
+        navigator.share({ files: [archivo] }).catch(function () {});
+      } else {
+        var a = document.createElement('a');
+        a.href = f; a.download = 'fondo-ipod.jpg';
+        document.body.appendChild(a); a.click(); a.remove();
+      }
+    });
+  };
+  function avisoFondo(texto) {
+    var p = document.createElement('p');
+    p.className = 'ayuda'; p.style.color = '#ff6b6b'; p.textContent = texto;
+    $('elegir-fondo').parentNode.after(p);
+    setTimeout(function () { p.remove(); }, 4000);
+  }
   function alertaFondo() {
     var p = document.createElement('p');
     p.className = 'ayuda'; p.style.color = '#ff6b6b';
