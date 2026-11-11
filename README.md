@@ -51,6 +51,10 @@ cualquier nombre de la lista.
 | Izquierda / derecha | Anterior / siguiente en la lista |
 | Centro | Abre lo seleccionado |
 
+**Descargar fondo de pantalla del tema:** en *Tema y colores*, crea una imagen del tema Ámbar o Claro tal como lo
+tienes (colores incluidos), con la pantalla vacía y sin opciones. Guárdala en Fotos y ponla como fondo del iPhone:
+en la pantalla de bloqueo, la hora de iOS queda encima de la pantalla dibujada.
+
 Para volver al diseño propio: doble toque en **menú** → **Ámbar** → Listo.
 
 ### Menú (doble toque en "menú" de la rueda)
@@ -145,6 +149,7 @@ Concentración → +) que muestre solo esa página y actívala desde "Modo iPod"
 | No veo la versión nueva | Cierra la app desde el selector de apps y ábrela dos veces. Si sigue igual: Ajustes → Apps → Safari → Avanzado → Datos de sitios web → borra **github.io**. |
 | Sale la barra de Safari | Borra el icono y vuelve a añadirlo con **"Abrir como app web"** activado (paso 1). |
 | Al tocar una app se abre su web | Mantén pulsado el nombre → **Abrir en …** |
+| Podimo se abre en la web | En la app de Podimo, abre un podcast → **Compartir → Copiar enlace**, y pégalo en menú → Mi lista como enlace de Podimo. |
 | Un atajo solo abre la app Atajos y no hace nada | Es un fallo de iOS 26 al lanzarlos desde otra app. Úsalos con el toque posterior (paso 3). |
 | He borrado un botón sin querer | Ajustes → Añadir botón (o Restaurar). |
 | Con "Mi foto" la lista o la rueda no encajan | La imagen debe tener la pantalla arriba y la rueda abajo, con proporción parecida a la del iPhone. |
