@@ -81,8 +81,8 @@ Para renombrar: toca el nombre de arriba → **Renombrar**. Para añadir accione
 |---|---|---|
 | Ajustar modo de bajo consumo | Activar | Es lo que más batería ahorra |
 | Ajustar Wi-Fi | Activar | Streaming con menos gasto que con datos |
-| Ajustar Bluetooth | Activar | Cascos o altavoz inalámbricos |
-| Ajustar datos móviles | Activar | Internet fuera de casa (quítalo si no lo necesitas) |
+| Ajustar Bluetooth *(opcional)* | Activar | Solo si usas cascos o altavoz inalámbricos |
+| Ajustar datos móviles *(opcional)* | Activar | Solo si tienes datos y quieres internet fuera de casa |
 | Ajustar brillo | 25 % | Menos gasto de pantalla |
 | Ajustar concentración | No molestar → Activar | Sin notificaciones que enciendan la pantalla |
 
