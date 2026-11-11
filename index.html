@@ -204,10 +204,14 @@
       <button id="elegir-fondo">Elegir foto</button>
     </div>
     <input id="archivo-fondo" type="file" accept="image/*" style="display:none">
-    <div class="botones-aj" style="margin-top:0"><button id="bajar-fondo">Descargar fondo de pantalla del tema</button></div>
-    <p class="ayuda" style="margin-top:0">Crea una imagen del tema que tienes puesto (Ámbar o Claro), con la pantalla vacía
-      y sin opciones, para usarla de fondo del iPhone. La pantalla queda vacía a propósito: en la pantalla de bloqueo,
-      la hora de iOS se verá encima. Una hora dibujada en la imagen se quedaría parada.</p>
+    <div class="botones-aj" style="margin-top:0">
+      <button id="bajar-fondo">Fondo: pantalla encendida</button>
+      <button id="bajar-fondo-apagado">Fondo: bloqueado</button>
+    </div>
+    <p class="ayuda" style="margin-top:0">Crea una imagen del tema que tienes puesto (Ámbar o Claro) para usarla de fondo
+      del iPhone, sin opciones ni textos. La rueda queda más arriba para que el Dock no la tape.
+      <b>Bloqueado</b> dibuja la pantalla apagada: pon el icono de la app iPod dentro y parecerá que está en la pantalla.
+      Al ponerla de fondo, no la amplíes y desactiva el zoom de perspectiva.</p>
     <p class="ayuda" style="margin-top:0">"Mi foto" coloca la lista y la rueda encima de una imagen con una pantalla
       arriba y una rueda abajo. La foto se guarda solo en este iPhone.</p>
     <p id="aviso-foto" class="ayuda" style="color:#ff6b6b; display:none"></p>
@@ -497,17 +501,20 @@
     c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath();
   }
   function circulo(c, x, y, r) { c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); }
-  function crearFondoTema() {
+  function crearFondoTema(apagada) {
     var claro = cfg.tema === 'claro';
     var css = getComputedStyle(document.documentElement);
-    var acento = css.getPropertyValue('--ambar').trim() || '#ffb340';
     var lcd = css.getPropertyValue('--lcd').trim() || '#120d05';
     var fondo = claro ? (css.getPropertyValue('--fondo-claro').trim() || '#c9c9ce') : '#0e0e0f';
-    var k = window.devicePixelRatio || 2, W = window.innerWidth, H = window.innerHeight;
+    var k = window.devicePixelRatio || 2, W = screen.width, H = screen.height;
     var cv = document.createElement('canvas');
     cv.width = Math.round(W * k); cv.height = Math.round(H * k);
     var c = cv.getContext('2d');
     c.scale(k, k);
+    // Colocación pensada para fondo: arriba libre para la hora de iOS, abajo libre para el Dock
+    var m = Math.round(W * 0.045);
+    var p = { left: m, top: Math.round(H * 0.125), width: W - 2 * m, height: Math.round(H * 0.36) };
+    var R = Math.min(W * 0.37, H * 0.165), cx = W / 2, cy = Math.round(H * 0.69);
     // Fondo con una luz suave
     c.fillStyle = fondo; c.fillRect(0, 0, W, H);
     var g = c.createLinearGradient(0, 0, 0, H);
@@ -515,25 +522,30 @@
     g.addColorStop(claro ? .4 : .5, 'rgba(255,255,255,0)');
     g.addColorStop(1, claro ? 'rgba(0,0,0,.14)' : 'rgba(0,0,0,.25)');
     c.fillStyle = g; c.fillRect(0, 0, W, H);
-    // Pantalla vacía
-    var p = $('pantalla').getBoundingClientRect();
+    // Pantalla
     c.save();
     c.shadowColor = claro ? 'rgba(0,0,0,.18)' : 'rgba(0,0,0,.5)'; c.shadowBlur = 10; c.shadowOffsetY = 2;
     redondeado(c, p.left, p.top, p.width, p.height, 18);
-    c.fillStyle = claro ? '#ffffff' : lcd; c.fill();
+    c.fillStyle = apagada ? (claro ? '#1d1f23' : '#0a0806') : (claro ? '#ffffff' : lcd); c.fill();
     c.restore();
+    if (apagada) {                                 // cristal apagado: brillo diagonal muy suave
+      c.save(); redondeado(c, p.left, p.top, p.width, p.height, 18); c.clip();
+      var rf = c.createLinearGradient(p.left, p.top, p.left + p.width, p.top + p.height);
+      rf.addColorStop(0, 'rgba(255,255,255,.10)'); rf.addColorStop(.45, 'rgba(255,255,255,.03)');
+      rf.addColorStop(.46, 'rgba(255,255,255,0)'); rf.addColorStop(1, 'rgba(255,255,255,.02)');
+      c.fillStyle = rf; c.fillRect(p.left, p.top, p.width, p.height); c.restore();
+    }
     redondeado(c, p.left + .5, p.top + .5, p.width - 1, p.height - 1, 18);
     c.lineWidth = 1; c.strokeStyle = claro ? 'rgba(0,0,0,.4)' : '#2a2a2d'; c.stroke();
-    if (!claro) {                                  // marco interior oscuro, como en la app
+    if (!claro) {
       redondeado(c, p.left + 4, p.top + 4, p.width - 8, p.height - 8, 14);
       c.lineWidth = 6; c.strokeStyle = '#0a0805'; c.stroke();
     }
-    var ig = c.createLinearGradient(0, p.top, 0, p.top + 16);   // sombra interior arriba
-    ig.addColorStop(0, claro ? 'rgba(0,0,0,.12)' : 'rgba(0,0,0,.55)'); ig.addColorStop(1, 'rgba(0,0,0,0)');
+    var ig = c.createLinearGradient(0, p.top, 0, p.top + 16);
+    ig.addColorStop(0, claro && !apagada ? 'rgba(0,0,0,.12)' : 'rgba(0,0,0,.55)'); ig.addColorStop(1, 'rgba(0,0,0,0)');
     c.save(); redondeado(c, p.left, p.top, p.width, p.height, 18); c.clip();
     c.fillStyle = ig; c.fillRect(p.left, p.top, p.width, 16); c.restore();
     // Rueda
-    var r = $('rueda').getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2, R = r.width / 2;
     c.save();
     c.shadowColor = 'rgba(0,0,0,.5)'; c.shadowBlur = 24; c.shadowOffsetY = 10;
     circulo(c, cx, cy, R);
@@ -543,7 +555,7 @@
     } else c.fillStyle = '#1b1b1d';
     c.fill(); c.restore();
     if (!claro) {
-      c.strokeStyle = '#3a3a3e'; c.lineWidth = 1.4;      // marcas del borde
+      c.strokeStyle = '#3a3a3e'; c.lineWidth = 1.4;
       for (var a = 0; a < 360; a += 7.5) {
         var t = (a - 90) * Math.PI / 180;
         c.beginPath();
@@ -556,7 +568,6 @@
       circulo(c, cx, cy, R * .82); c.fillStyle = dg; c.fill();
       c.strokeStyle = '#2a2a2d'; c.lineWidth = 1; c.stroke();
     }
-    // Botón central
     c.save();
     c.shadowColor = 'rgba(0,0,0,.5)'; c.shadowBlur = 8; c.shadowOffsetY = 3;
     var cg = c.createRadialGradient(cx, cy - R * .2, 0, cx, cy, R * .34);
@@ -565,17 +576,15 @@
     circulo(c, cx, cy, R * .34); c.strokeStyle = claro ? 'rgba(0,0,0,.5)' : '#2a2a2d'; c.lineWidth = 1; c.stroke();
     return cv;
   }
-  function descargarFondoTema() {
+  function descargarFondoTema(apagada) {
     if (cfg.tema === 'foto') {
       var a0 = $('aviso-foto');
       a0.textContent = 'Elige primero el tema Ámbar o Claro: con "Mi foto" ya tienes tu imagen.';
       a0.style.display = 'block'; return;
     }
-    var aj = $('ajustes'); aj.classList.remove('ver');     // medir con la pantalla principal visible
-    var cv = crearFondoTema();
-    aj.classList.add('ver');
+    var cv = crearFondoTema(apagada);
     cv.toBlob(function (blob) {
-      var nombre = 'fondo-ipod-' + (cfg.tema === 'claro' ? 'claro' : 'ambar') + '.png';
+      var nombre = 'fondo-ipod-' + (cfg.tema === 'claro' ? 'claro' : 'ambar') + (apagada ? '-bloqueado' : '') + '.png';
       var archivo = new File([blob], nombre, { type: 'image/png' });
       if (navigator.canShare && navigator.canShare({ files: [archivo] })) {
         navigator.share({ files: [archivo] }).catch(function () {});
@@ -586,7 +595,8 @@
       }
     }, 'image/png');
   }
-  $('bajar-fondo').onclick = descargarFondoTema;
+  $('bajar-fondo').onclick = function () { descargarFondoTema(false); };
+  $('bajar-fondo-apagado').onclick = function () { descargarFondoTema(true); };
 
   // ---------- Temas ----------
   function fondoGuardado() { try { return localStorage.getItem('ipod-fondo'); } catch (e) { return null; } }

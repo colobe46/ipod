@@ -51,9 +51,13 @@ cualquier nombre de la lista.
 | Izquierda / derecha | Anterior / siguiente en la lista |
 | Centro | Abre lo seleccionado |
 
-**Descargar fondo de pantalla del tema:** en *Tema y colores*, crea una imagen del tema Ámbar o Claro tal como lo
-tienes (colores incluidos), con la pantalla vacía y sin opciones. Guárdala en Fotos y ponla como fondo del iPhone:
-en la pantalla de bloqueo, la hora de iOS queda encima de la pantalla dibujada.
+**Descargar fondo de pantalla del tema** (en *Tema y colores*): crea una imagen del tema Ámbar o Claro, con tus
+colores y sin opciones ni textos, colocada para que la hora de iOS quede arriba y el Dock no tape la rueda.
+- **Pantalla encendida:** la pantalla blanca (Claro) o de color (Ámbar), vacía.
+- **Bloqueado:** la pantalla apagada, oscura y con un reflejo suave. Pon el icono de la app iPod dentro de la pantalla
+  y parecerá que está encendido en el aparato.
+
+Guárdala en Fotos y ponla de fondo **sin ampliarla** y con el zoom de perspectiva desactivado, para que no se desplace.
 
 Para volver al diseño propio: doble toque en **menú** → **Ámbar** → Listo.
 
