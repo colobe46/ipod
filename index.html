@@ -54,10 +54,24 @@
   .op.armada { color: var(--ambar); }
   .op-arriba { top: 17%; left: 50%; transform: translateX(-50%); }
   .op-abajo  { bottom: 17%; left: 50%; transform: translateX(-50%); font-size: 15px; }
-  .op-izq    { left: 15%; top: 50%; transform: translateY(-50%); font-size: 15px; }
-  .op-der    { right: 15%; top: 50%; transform: translateY(-50%); font-size: 15px; }
+  .op-izq    { left: 13%; top: 50%; transform: translateY(-50%); font-size: 15px; letter-spacing: -1px; }
+  .op-der    { right: 13%; top: 50%; transform: translateY(-50%); font-size: 15px; letter-spacing: -1px; }
   body.tema-foto .op { display: none; }
 
+
+  /* ---------- Tema "Claro": fondo a elegir, pantalla blanca y rueda gris oscura ---------- */
+  body.tema-claro { background: var(--fondo-claro, #c9c9ce); }
+  body.tema-claro #pantalla { background: #fff; color: #111; border-color: rgba(0,0,0,.35); box-shadow: inset 0 0 0 1px #e2e2e2; }
+  body.tema-claro #barra { justify-content: center; color: #222; border-bottom-color: #dcdcdc; font-weight: 600; }
+  body.tema-claro #barra .marca { display: none; }
+  body.tema-claro #lista a.sel { background: #3a3a3c; color: #fff; }
+  body.tema-claro #rueda { background: #2c2c2e; border-color: rgba(0,0,0,.4); }
+  body.tema-claro #disco { display: none; }
+  body.tema-claro #aguja::before { background: #f2f2f2; opacity: .55; }
+  body.tema-claro #centro { background: #3a3a3c; border-color: rgba(0,0,0,.4); color: #f2f2f2; }
+  body.tema-claro #rueda.pulsado #centro { background: #48484b; color: #fff; }
+  body.tema-claro .op { color: #ececec; }
+  body.tema-claro .op.armada { color: #fff; text-shadow: 0 0 8px rgba(255,255,255,.8); }
 
   /* ---------- Tema "Mi foto": la app se coloca encima de tu imagen ---------- */
   #zona-play { position: absolute; left: 30%; right: 30%; bottom: 0; height: 30%; }
@@ -124,8 +138,8 @@
   <div id="disco"></div>
   <div id="aguja"></div>
   <span class="op op-arriba">ajustes</span>
-  <span class="op op-izq">⏮</span>
-  <span class="op op-der">⏭</span>
+  <span class="op op-izq">❙◀︎◀︎</span>
+  <span class="op op-der">▶︎▶︎❙</span>
   <span class="op op-abajo">▶︎❙❙</span>
   <a id="centro" href="#">OK</a>
   <a id="zona-play" href="https://open.spotify.com/" aria-label="Doble toque: abrir Spotify"></a>
@@ -148,6 +162,7 @@
   <label>Tema</label>
   <div class="botones-aj" style="margin-top:0">
     <button class="tema" data-tema="ambar">Ámbar</button>
+    <button class="tema" data-tema="claro">Claro</button>
     <button class="tema" data-tema="foto">Mi foto</button>
     <button id="elegir-fondo">Elegir foto</button>
   </div>
@@ -164,6 +179,16 @@
     <button class="color" data-c="#c49bff" style="background:#c49bff" aria-label="Lila"></button>
     <button class="color" data-c="#f2f2f2" style="background:#f2f2f2" aria-label="Blanco"></button>
     <input id="color-libre" type="color" aria-label="Otro color">
+  </div>
+  <label>Color de fondo (tema Claro)</label>
+  <div class="colores">
+    <button class="color cfondo" data-c="#c9c9ce" style="background:#c9c9ce" aria-label="Plata"></button>
+    <button class="color cfondo" data-c="#1c1c1e" style="background:#1c1c1e;outline:1px solid #444" aria-label="Negro"></button>
+    <button class="color cfondo" data-c="#b3263a" style="background:#b3263a" aria-label="Rojo"></button>
+    <button class="color cfondo" data-c="#2f5fb3" style="background:#2f5fb3" aria-label="Azul"></button>
+    <button class="color cfondo" data-c="#3c8d5a" style="background:#3c8d5a" aria-label="Verde"></button>
+    <button class="color cfondo" data-c="#e7b8c8" style="background:#e7b8c8" aria-label="Rosa"></button>
+    <input id="fondo-libre" type="color" class="libre" aria-label="Otro color" style="width:40px;height:36px;padding:0;border:1px solid #444;border-radius:8px;background:none">
   </div>
   <div class="botones-aj"><button id="ahorro-ya">Activar modo ahorro ahora</button></div>
   <label for="atajo-modo">Atajo de ahorro</label>
@@ -410,13 +435,23 @@
     raiz.setProperty('--ambar-osc', mezclar(c, 0.22));
     raiz.setProperty('--lcd', mezclar(c, 0.07));
     $('color-libre').value = c;
-    Array.prototype.forEach.call(document.querySelectorAll('.color'), function (b) {
+    Array.prototype.forEach.call(document.querySelectorAll('.color:not(.cfondo)'), function (b) {
       b.classList.toggle('activo', b.dataset.c.toLowerCase() === c.toLowerCase());
     });
+    var fo = /^#[0-9a-f]{6}$/i.test(cfg.fondo || '') ? cfg.fondo : '#c9c9ce';
+    raiz.setProperty('--fondo-claro', fo);
+    $('fondo-libre').value = fo;
+    Array.prototype.forEach.call(document.querySelectorAll('.cfondo'), function (b) {
+      b.classList.toggle('activo', b.dataset.c.toLowerCase() === fo.toLowerCase());
+    });
   }
-  Array.prototype.forEach.call(document.querySelectorAll('.color'), function (b) {
+  Array.prototype.forEach.call(document.querySelectorAll('.color:not(.cfondo)'), function (b) {
     b.onclick = function () { cfg.color = b.dataset.c; guardar(); aplicarColor(); };
   });
+  Array.prototype.forEach.call(document.querySelectorAll('.cfondo'), function (b) {
+    b.onclick = function () { cfg.fondo = b.dataset.c; guardar(); aplicarColor(); };
+  });
+  $('fondo-libre').oninput = function () { cfg.fondo = this.value; guardar(); aplicarColor(); };
   $('color-libre').oninput = function () { cfg.color = this.value; guardar(); aplicarColor(); };
   $('ahorro-ya').onclick = function () { location.href = urlAtajo(cfg.modo || DEF.modo); };
 
@@ -426,6 +461,7 @@
   function aplicarTema() {
     var f = fondoGuardado(), foto = cfg.tema === 'foto' && !!f;
     document.body.classList.toggle('tema-foto', foto);
+    document.body.classList.toggle('tema-claro', cfg.tema === 'claro');
     document.body.style.backgroundImage = foto ? 'url(' + f + ')' : '';
     Array.prototype.forEach.call(document.querySelectorAll('.tema'), function (b) {
       b.classList.toggle('activo', b.dataset.tema === (cfg.tema || 'ambar'));

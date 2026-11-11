@@ -23,13 +23,13 @@ Podimo y tus favoritos), una rueda para moverte y unos pocos botones. Sin App St
 
 ## 2. Cómo se usa
 
-### Tema Ámbar (el diseño propio)
+### Temas Ámbar y Claro
 | En la rueda | Qué hace |
 |---|---|
 | Girar el dedo | Sube o baja por la lista |
 | **OK** (centro), un toque | Abre lo seleccionado |
 | **ajustes** (arriba), doble toque | Abre los ajustes |
-| **⏮ / ⏭** (izquierda / derecha), doble toque | Canción anterior / siguiente (atajos, ver paso 3) |
+| **❙◀︎◀︎ / ▶︎▶︎❙** (izquierda / derecha), doble toque | Canción anterior / siguiente (atajos, ver paso 3) |
 | **▶︎❙❙** (abajo), doble toque | Abre Spotify |
 
 Las opciones de la rueda solo actúan con **doble toque**: con el primero se iluminan y con el segundo se activan.
@@ -40,6 +40,9 @@ Así no se disparan sin querer al girar. También puedes tocar directamente cual
 
 ### Temas (ajustes → Tema)
 - **Ámbar:** el diseño propio de la app (pantalla ámbar, rueda giratoria y botones). Encaja en cualquier iPhone.
+- **Claro:** como Ámbar, pero con la pantalla blanca, el resaltado en gris oscuro, la hora centrada arriba y la
+  rueda gris oscura sin líneas. El **color de fondo** lo eliges en ajustes (plata, negro, rojo, azul, verde, rosa
+  o cualquier otro con el selector). Se usa igual que Ámbar.
 - **Mi foto:** pon de fondo una imagen con una pantalla arriba y una rueda abajo. La lista aparece dentro de la
   pantalla y la rueda táctil se coloca encima de la dibujada. Pulsa **Elegir foto** y escoge la imagen de tu carrete;
   se guarda solo en tu iPhone. Con este tema, la rueda dibujada funciona así:
