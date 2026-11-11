@@ -23,17 +23,22 @@ Podimo y tus favoritos), una rueda para moverte y unos pocos botones. Sin App St
 
 ## 2. Cómo se usa
 
-| Control | Un toque | Doble toque |
-|---|---|---|
-| **Rueda** (girar el dedo) | Sube o baja por la lista | — |
-| **OK** (centro de la rueda) | Abre lo seleccionado | — |
-| **MENÚ** | Abre los ajustes | — |
-| **⏮ / ⏭** | Anterior / siguiente en la lista | Canción anterior / siguiente (atajos, ver paso 3) |
-| **▶︎❙❙** | Activa el modo ahorro (atajo, ver paso 3) | Abre Spotify |
+### Tema Ámbar (el diseño propio)
+| En la rueda | Qué hace |
+|---|---|
+| Girar el dedo | Sube o baja por la lista |
+| **OK** (centro), un toque | Abre lo seleccionado |
+| **ajustes** (arriba), doble toque | Abre los ajustes |
+| **⏮ / ⏭** (izquierda / derecha), doble toque | Canción anterior / siguiente (atajos, ver paso 3) |
+| **▶︎❙❙** (abajo), doble toque | Abre Spotify |
 
-También puedes tocar directamente cualquier nombre de la lista.
+Las opciones de la rueda solo actúan con **doble toque**: con el primero se iluminan y con el segundo se activan.
+Así no se disparan sin querer al girar. También puedes tocar directamente cualquier nombre de la lista.
 
-### Temas (MENÚ → Tema)
+**Color de énfasis:** en ajustes, elige uno de los colores o cualquier otro con el selector.
+**Modo ahorro:** en ajustes, botón *Activar modo ahorro ahora* (o la automatización del paso 4).
+
+### Temas (ajustes → Tema)
 - **Ámbar:** el diseño propio de la app (pantalla ámbar, rueda giratoria y botones). Encaja en cualquier iPhone.
 - **Mi foto:** pon de fondo una imagen con una pantalla arriba y una rueda abajo. La lista aparece dentro de la
   pantalla y la rueda táctil se coloca encima de la dibujada. Pulsa **Elegir foto** y escoge la imagen de tu carrete;
@@ -48,7 +53,7 @@ También puedes tocar directamente cualquier nombre de la lista.
 
 Para volver al diseño propio: arriba en la rueda → **Ámbar** → Listo.
 
-### Ajustes (botón MENÚ)
+### Ajustes
 - **Cambiar o añadir botones:** pega tal cual un enlace copiado con *Compartir → Copiar enlace*
   (una lista de Spotify, un canal o vídeo de YouTube, un podcast de Podimo). Se abre directamente en su app.
 - **Quitar un botón:** la **×** de su derecha.
@@ -65,7 +70,7 @@ Los ajustes se guardan en el iPhone, separados de Safari: configúralos desde el
 Ábrelos en **Atajos → pestaña "Atajos" (abajo) → botón +**. *No* uses la pestaña "Automatización" para esto.
 Para renombrar: toca el nombre de arriba → **Renombrar**. Para añadir acciones: escríbelas en **"Buscar acciones"**.
 
-### "Modo iPod" (botón ▶︎❙❙, un toque)
+### "Modo iPod" (ajustes → Activar modo ahorro ahora; en el tema Mi foto, abajo en la rueda)
 | Acción | Valor | Para qué |
 |---|---|---|
 | Ajustar modo de bajo consumo | Activar | Es lo que más batería ahorra |
@@ -75,7 +80,7 @@ Para renombrar: toca el nombre de arriba → **Renombrar**. Para añadir accione
 | Ajustar brillo | 25 % | Menos gasto de pantalla |
 | Ajustar concentración | No molestar → Activar | Sin notificaciones que enciendan la pantalla |
 
-### "Siguiente" y "Anterior" (botones ⏭ / ⏮, doble toque)
+### "Siguiente" y "Anterior" (⏭ / ⏮ en la rueda, doble toque)
 - **Siguiente:** una sola acción, **Saltar hacia delante**.
 - **Anterior:** una sola acción, **Saltar hacia atrás**.
 
@@ -119,8 +124,8 @@ Concentración → +) que muestre solo esa página y actívala desde "Modo iPod"
 | No veo la versión nueva | Cierra la app desde el selector de apps y ábrela dos veces. Si sigue igual: Ajustes → Apps → Safari → Avanzado → Datos de sitios web → borra **github.io**. |
 | Sale la barra de Safari | Borra el icono y vuelve a añadirlo con **"Abrir como app web"** activado (paso 1). |
 | Al tocar una app se abre su web | Mantén pulsado el nombre → **Abrir en …** |
-| ▶︎❙❙ o ⏮/⏭ no hacen nada | Revisa que los atajos se llaman exactamente "Modo iPod", "Siguiente" y "Anterior" (o cambia los nombres en MENÚ). |
-| He borrado un botón sin querer | MENÚ → Añadir botón (o Restaurar). |
+| El ahorro o ⏮/⏭ no hacen nada | Revisa que los atajos se llaman exactamente "Modo iPod", "Siguiente" y "Anterior" (o cambia los nombres en ajustes). |
+| He borrado un botón sin querer | Ajustes → Añadir botón (o Restaurar). |
 | Con "Mi foto" la lista o la rueda no encajan | La imagen debe tener la pantalla arriba y la rueda abajo, con proporción parecida a la del iPhone. |
 | He perdido la foto de fondo | Se borra si borras el icono o los datos de Safari: vuelve a pulsar **Elegir foto**. |
 

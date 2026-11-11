@@ -12,7 +12,7 @@
 <link rel="manifest" href="manifest.json">
 <title>iPod</title>
 <style>
-  :root { --ambar: #ffb340; --ambar-osc: #3a2a10; --cuerpo: #0e0e0f; --pieza: #1b1b1d; --borde: #2a2a2d; }
+  :root { --ambar: #ffb340; --ambar-osc: #3a2a10; --lcd: #120d05; --cuerpo: #0e0e0f; --pieza: #1b1b1d; --borde: #2a2a2d; }
   html, body { margin: 0; height: 100%; background: var(--cuerpo); color: #e8e8ea;
     font-family: -apple-system, system-ui, sans-serif;
     -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
@@ -22,8 +22,8 @@
   a { color: inherit; text-decoration: none; }
 
   /* ---------- Pantalla LCD ---------- */
-  #pantalla { width: 100%; flex: 1 1 auto; min-height: 0; max-height: 46vh; display: flex; flex-direction: column;
-    background: #120d05; border: 1px solid var(--borde); border-radius: 18px; overflow: hidden;
+  #pantalla { width: 100%; flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column;
+    background: var(--lcd); border: 1px solid var(--borde); border-radius: 18px; overflow: hidden;
     box-shadow: inset 0 0 0 6px #0a0805; font-family: ui-monospace, Menlo, monospace; color: var(--ambar); }
   #barra { display: flex; justify-content: space-between; align-items: center;
     padding: 12px 18px 10px; font-size: 13px; letter-spacing: 1px; border-bottom: 1px solid var(--ambar-osc); }
@@ -33,34 +33,34 @@
   #lista a { display: flex; justify-content: space-between; align-items: center;
     font-size: 22px; padding: 10px 14px; border-radius: 8px; }
   #lista a::after { content: '›'; opacity: 0; }
-  #lista a.sel { background: var(--ambar); color: #120d05; }
+  #lista a.sel { background: var(--ambar); color: var(--lcd); }
   #lista a.sel::after { opacity: 1; }
 
   /* ---------- Rueda giratoria ---------- */
-  #rueda { position: relative; flex: none; margin: 26px 0 22px; touch-action: none;
-    width: min(62vw, 260px, 32vh); aspect-ratio: 1; border-radius: 50%;
+  #rueda { position: relative; flex: none; margin: 28px 0 6px; touch-action: none;
+    width: min(80vw, 330px, 42vh); aspect-ratio: 1; border-radius: 50%;
     background: repeating-conic-gradient(from 0deg, #3a3a3e 0deg 1.2deg, transparent 1.2deg 7.5deg), var(--pieza);
     border: 1px solid var(--borde); }
   #disco { position: absolute; inset: 9%; border-radius: 50%; background: #151517; border: 1px solid var(--borde); }
   #aguja { position: absolute; inset: 0; transition: transform .12s ease-out; pointer-events: none; }
   #aguja::before { content: ''; position: absolute; left: 50%; top: 7%; width: 6px; height: 6px; margin-left: -3px;
     border-radius: 50%; background: var(--ambar); }
-  #centro { position: absolute; inset: 30%; border-radius: 50%; background: var(--pieza); border: 1px solid var(--borde);
+  #centro { position: absolute; inset: 33%; border-radius: 50%; background: var(--pieza); border: 1px solid var(--borde);
     display: flex; align-items: center; justify-content: center; font: 12px ui-monospace, Menlo, monospace;
     color: #8e8e93; letter-spacing: 1px; }
   #rueda.pulsado #centro { background: #232326; color: var(--ambar); }
+  .op { position: absolute; font: 13px ui-monospace, Menlo, monospace; letter-spacing: 1px; color: #a0a0a6;
+    pointer-events: none; transition: color .1s; }
+  .op.armada { color: var(--ambar); }
+  .op-arriba { top: 17%; left: 50%; transform: translateX(-50%); }
+  .op-abajo  { bottom: 17%; left: 50%; transform: translateX(-50%); font-size: 15px; }
+  .op-izq    { left: 15%; top: 50%; transform: translateY(-50%); font-size: 15px; }
+  .op-der    { right: 15%; top: 50%; transform: translateY(-50%); font-size: 15px; }
+  body.tema-foto .op { display: none; }
 
-  /* ---------- Botones ---------- */
-  #botones { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; flex: none; }
-  #botones > * { display: flex; align-items: center; justify-content: center; height: 52px; border-radius: 14px;
-    background: var(--pieza); border: 1px solid var(--borde); color: #d0d0d4; font-size: 18px;
-    font-family: inherit; padding: 0; }
-  #botones > *:active { background: #26262a; color: var(--ambar); }
-  #botones .txt { font: 12px ui-monospace, Menlo, monospace; letter-spacing: 1px; }
-  #b-play { font-size: 14px; letter-spacing: -1px; }
 
   /* ---------- Tema "Mi foto": la app se coloca encima de tu imagen ---------- */
-  #zona-play { display: none; position: absolute; left: 30%; right: 30%; bottom: 0; height: 30%; }
+  #zona-play { position: absolute; left: 30%; right: 30%; bottom: 0; height: 30%; }
   body.tema-foto { background: #000 center / cover no-repeat; }
   body.tema-foto #pantalla { position: fixed; max-height: none; background: transparent; border: 0; border-radius: 0;
     box-shadow: none; color: #111; font-family: -apple-system, system-ui, sans-serif; }
@@ -71,10 +71,9 @@
   body.tema-foto #lista a { font-size: 22px; font-weight: 500; padding: 7px 12px; border-radius: 0; }
   body.tema-foto #lista a.sel { background: #3a3a3c; color: #fff; }
   body.tema-foto #rueda { position: fixed; margin: 0; background: none; border-color: transparent; }
-  body.tema-foto #disco, body.tema-foto #aguja, body.tema-foto #botones { display: none; }
+  body.tema-foto #disco, body.tema-foto #aguja { display: none; }
   body.tema-foto #centro { inset: 32.5%; background: transparent; border-color: transparent; color: transparent; }
   body.tema-foto #rueda.pulsado #centro { background: rgba(255,255,255,.12); }
-  body.tema-foto #zona-play { display: block; }
 
   /* ---------- Ajustes ---------- */
   #ajustes { display: none; position: fixed; inset: 0; background: #000; overflow-y: auto; box-sizing: border-box;
@@ -97,6 +96,10 @@
   .quitar { grid-row: span 2; border: none !important; color: #8e8e93 !important; font-size: 26px !important; padding: 0 4px !important; }
   .botones-aj { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0; }
   #ajustes label { display: block; color: #8e8e93; font-size: 13px; margin: 16px 0 6px; }
+  .colores { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .color { width: 34px; height: 34px; border-radius: 50%; border: 2px solid transparent !important; padding: 0 !important; }
+  .color.activo { border-color: #fff !important; }
+  #color-libre { width: 40px; height: 36px; padding: 0; border: 1px solid #444; border-radius: 8px; background: none; }
   .tema.activo { border-color: var(--ambar) !important; color: var(--ambar) !important; }
   .ayuda { color: #8e8e93; font-size: 13px; line-height: 1.5; margin-top: 16px; }
 
@@ -120,22 +123,21 @@
 <div id="rueda" aria-label="Gira para moverte; toca el centro para abrir">
   <div id="disco"></div>
   <div id="aguja"></div>
+  <span class="op op-arriba">ajustes</span>
+  <span class="op op-izq">⏮</span>
+  <span class="op op-der">⏭</span>
+  <span class="op op-abajo">▶︎❙❙</span>
   <a id="centro" href="#">OK</a>
   <a id="zona-play" href="https://open.spotify.com/" aria-label="Doble toque: abrir Spotify"></a>
 </div>
-
-<nav id="botones">
-  <button id="b-ajustes" class="txt" aria-label="Ajustes">MENÚ</button>
-  <button id="b-ant" aria-label="Anterior">⏮</button>
-  <a id="b-play" href="https://open.spotify.com/" aria-label="Ahorro; doble toque: Spotify">▶︎❙❙</a>
-  <button id="b-sig" aria-label="Siguiente">⏭</button>
-</nav>
 
 <section id="ajustes">
   <div class="cabecera">
     <h2>Ajustes</h2>
     <button id="listo">Listo</button>
   </div>
+  <p class="ayuda">En la rueda: gira para moverte, toca el centro para abrir y haz <b>doble toque</b> en
+    ajustes, ⏮, ⏭ o ▶︎❙❙ (abre Spotify).</p>
   <p class="ayuda">Pega tal cual un enlace de Spotify, YouTube o Podimo (Compartir → Copiar enlace):
     se abrirá directamente en su app.</p>
   <div id="filas"></div>
@@ -153,6 +155,17 @@
   <p class="ayuda" style="margin-top:0">"Mi foto" coloca la lista y la rueda encima de una imagen con una pantalla
     arriba y una rueda abajo. La foto se guarda solo en este iPhone.</p>
   <p id="aviso-foto" class="ayuda" style="color:#ff6b6b; display:none"></p>
+  <label>Color de énfasis (tema Ámbar)</label>
+  <div class="colores" id="colores">
+    <button class="color" data-c="#ffb340" style="background:#ffb340" aria-label="Ámbar"></button>
+    <button class="color" data-c="#4cd964" style="background:#4cd964" aria-label="Verde"></button>
+    <button class="color" data-c="#5ac8fa" style="background:#5ac8fa" aria-label="Azul"></button>
+    <button class="color" data-c="#ff6b9a" style="background:#ff6b9a" aria-label="Rosa"></button>
+    <button class="color" data-c="#c49bff" style="background:#c49bff" aria-label="Lila"></button>
+    <button class="color" data-c="#f2f2f2" style="background:#f2f2f2" aria-label="Blanco"></button>
+    <input id="color-libre" type="color" aria-label="Otro color">
+  </div>
+  <div class="botones-aj"><button id="ahorro-ya">Activar modo ahorro ahora</button></div>
   <label for="atajo-modo">Atajo de ahorro</label>
   <input id="atajo-modo" autocapitalize="off" autocorrect="off">
   <label for="atajo-sig">Atajo canción siguiente</label>
@@ -211,7 +224,7 @@
       l.appendChild(a);
     });
     var sp = cfg.botones.filter(function (b) { return /spotify/i.test(b.u); })[0];
-    $('b-play').href = $('zona-play').href = sp ? sp.u : 'https://open.spotify.com/';
+    $('zona-play').href = sp ? sp.u : 'https://open.spotify.com/';
     actualizar();
   }
   function actualizar() {
@@ -264,7 +277,10 @@
     var p = g.inicio, centro = g.centro;
     g = null;
     if (girado) { clicPlay = false; return; }
-    if (!centro && document.body.classList.contains('tema-foto')) tocarZona(zonaDe(p.ang));
+    if (!centro) {
+      if (document.body.classList.contains('tema-foto')) tocarZona(zonaDe(p.ang));
+      else tocarOpcion(zonaDe(p.ang));
+    }
   }
   var girado = false;
 
@@ -301,6 +317,25 @@
       var z = pendiente.zona; pendiente = null; SIMPLE[z]();
     }, 350) };
   }
+  // Tema Ámbar: las opciones de la rueda solo actúan con doble toque
+  var CLASE_OP = { menu: 'op-arriba', play: 'op-abajo', sig: 'op-der', ant: 'op-izq' };
+  var armada = null;
+  function tocarOpcion(zona) {
+    var ahora = Date.now();
+    var el = document.querySelector('.' + CLASE_OP[zona]);
+    if (armada && armada.zona === zona && ahora - armada.t < 400) {
+      clearTimeout(armada.timer); armada.el.classList.remove('armada'); armada = null;
+      if (zona === 'play') clicPlay = true;        // deja pasar el toque: el enlace abre Spotify
+      else DOBLE[zona]();
+      return;
+    }
+    if (armada) { clearTimeout(armada.timer); armada.el.classList.remove('armada'); }
+    el.classList.add('armada');                    // se ilumina: "toca otra vez"
+    armada = { zona: zona, t: ahora, el: el, timer: setTimeout(function () {
+      el.classList.remove('armada'); armada = null;
+    }, 400) };
+  }
+
   $('zona-play').addEventListener('click', function (e) {
     if (!clicPlay) e.preventDefault();
     clicPlay = false;
@@ -311,26 +346,6 @@
     if (girado || $('centro').getAttribute('href') === '#') e.preventDefault();
     girado = false;
   });
-
-  // ---------- Botones: un toque y doble toque ----------
-  //            un toque                doble toque
-  // MENÚ       ajustes                 —
-  // ⏮ / ⏭      anterior / siguiente    canción anterior / siguiente (atajos)
-  // ▶︎❙❙        ahorro (atajo)          abrir Spotify
-  var DOBLE_MS = 350;
-  function dobleToque(el, simple, doble) {
-    var t = null;
-    el.addEventListener('click', function (e) {
-      if (t) { clearTimeout(t); t = null; doble(e); return; }
-      if (el.tagName === 'A') e.preventDefault();
-      t = setTimeout(function () { t = null; simple(); }, DOBLE_MS);
-    });
-  }
-  $('b-ajustes').onclick = abrirAjustes;
-  dobleToque($('b-ant'), function () { mover(-1); }, function () { location.href = urlAtajo(cfg.ant || DEF.ant); });
-  dobleToque($('b-sig'), function () { mover(1); },  function () { location.href = urlAtajo(cfg.sig || DEF.sig); });
-  // En el segundo toque se deja pasar el enlace: es un toque real y Spotify se abre sin aviso.
-  dobleToque($('b-play'), function () { location.href = urlAtajo(cfg.modo || DEF.modo); }, function () {});
 
   // ---------- Reloj: una vez por minuto, parado con la pantalla apagada ----------
   var t;
@@ -381,6 +396,29 @@
     pintar();
     $('ajustes').classList.remove('ver');
   };
+
+  // ---------- Color de énfasis ----------
+  function mezclar(hex, f) {
+    var n = parseInt(hex.slice(1), 16);
+    var r = Math.round(((n >> 16) & 255) * f), g = Math.round(((n >> 8) & 255) * f), b = Math.round((n & 255) * f);
+    return 'rgb(' + r + ',' + g + ',' + b + ')';
+  }
+  function aplicarColor() {
+    var c = /^#[0-9a-f]{6}$/i.test(cfg.color || '') ? cfg.color : '#ffb340';
+    var raiz = document.documentElement.style;
+    raiz.setProperty('--ambar', c);
+    raiz.setProperty('--ambar-osc', mezclar(c, 0.22));
+    raiz.setProperty('--lcd', mezclar(c, 0.07));
+    $('color-libre').value = c;
+    Array.prototype.forEach.call(document.querySelectorAll('.color'), function (b) {
+      b.classList.toggle('activo', b.dataset.c.toLowerCase() === c.toLowerCase());
+    });
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.color'), function (b) {
+    b.onclick = function () { cfg.color = b.dataset.c; guardar(); aplicarColor(); };
+  });
+  $('color-libre').oninput = function () { cfg.color = this.value; guardar(); aplicarColor(); };
+  $('ahorro-ya').onclick = function () { location.href = urlAtajo(cfg.modo || DEF.modo); };
 
   // ---------- Temas ----------
   function fondoGuardado() { try { return localStorage.getItem('ipod-fondo'); } catch (e) { return null; } }
@@ -454,6 +492,7 @@
   pintar();
   reloj();
   aplicarTema();
+  aplicarColor();
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 })();
 </script>
