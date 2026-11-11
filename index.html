@@ -108,7 +108,8 @@
       { n: 'YouTube', u: 'https://www.youtube.com/' },
       { n: 'Podimo',  u: 'https://open.podimo.com/' }
     ],
-    modo: 'Modo iPod'
+    modo: 'Modo iPod',
+    v: 2
   };
   function copia(o) { return JSON.parse(JSON.stringify(o)); }
   function cargar() {
@@ -118,6 +119,13 @@
         // Cambia los enlaces antiguos (spotify://…), que hacían preguntar a iOS, por los web.
         var viejos = { 'spotify://': DEF.botones[0].u, 'youtube://': DEF.botones[1].u, 'podimo://': DEF.botones[2].u };
         c.botones.forEach(function (b) { if (viejos[b.u]) b.u = viejos[b.u]; delete b.w; });
+        // Una sola vez: recupera Podimo si se borró sin querer.
+        if (!c.v) {
+          var tiene = c.botones.some(function (b) { return /podimo/i.test(b.u); });
+          if (!tiene) c.botones.push(copia(DEF.botones[2]));
+          c.v = 2;
+          try { localStorage.setItem('ipod', JSON.stringify(c)); } catch (e) {}
+        }
         return c;
       }
     } catch (e) {}
