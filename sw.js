@@ -1,10 +1,9 @@
-// Guarda la página en el iPhone: abre al instante y funciona sin internet.
-// Si hay conexión, descarga la versión nueva en segundo plano para la próxima vez.
-const CACHE = 'ipod-v10';
+// Primero intenta descargar la versión más reciente; si no hay internet, usa la copia guardada.
+const CACHE = 'ipod-v11';
 const ARCHIVOS = ['./', 'index.html', 'manifest.json', 'icon.png'];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ARCHIVOS)));
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ARCHIVOS.map(u => new Request(u, { cache: 'reload' })))));
   self.skipWaiting();
 });
 
@@ -15,13 +14,13 @@ self.addEventListener('activate', e => e.waitUntil(
 ));
 
 self.addEventListener('fetch', e => {
-  if (e.request.method !== 'GET') return;
-  e.respondWith(caches.open(CACHE).then(c =>
-    c.match(e.request, { ignoreSearch: true }).then(guardada => {
-      const red = fetch(e.request)
-        .then(r => { if (r.ok) c.put(e.request, r.clone()); return r; })
-        .catch(() => guardada);
-      return guardada || red;
-    })
-  ));
+  if (e.request.method !== 'GET' || !e.request.url.startsWith(self.location.origin)) return;
+  e.respondWith(
+    fetch(e.request, { cache: 'no-cache' })
+      .then(r => {
+        if (r.ok) { const copia = r.clone(); caches.open(CACHE).then(c => c.put(e.request, copia)); }
+        return r;
+      })
+      .catch(() => caches.match(e.request, { ignoreSearch: true }))
+  );
 });
