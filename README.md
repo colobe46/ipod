@@ -1,36 +1,112 @@
-# iPod
+# iPod — el iPhone como reproductor de música
 
-Launcher minimalista para usar el iPhone como un iPod: Spotify, YouTube y Podimo en una pantalla negra.
-Es una página web que se añade a la pantalla de inicio desde Safari, sin App Store ni Xcode.
+Una app web minimalista para usar el iPhone como reproductor: una pantalla con tu lista (Spotify, YouTube,
+Podimo y tus favoritos), una rueda para moverte y unos pocos botones. Sin App Store, sin Mac y sin gastar batería.
 
-**Abrir en el iPhone:** https://colobe46.github.io/ipod/ → Safari → Compartir → *Añadir a pantalla de inicio*.
+**Dirección:** https://colobe46.github.io/ipod/
 
-## Uso: la rueda
-Gira el dedo para moverte por la lista y toca el centro para abrir.
+---
 
-| Zona | Un toque | Doble toque |
+## 1. Instalar la app en el iPhone
+
+1. Abre **Safari** (tiene que ser Safari) y entra en `colobe46.github.io/ipod`.
+2. Pulsa **Compartir** (el cuadrado con la flecha) → **Añadir a pantalla de inicio**.
+3. Comprueba que **"Abrir como app web"** está **activado**. Si está desactivado, se abrirá dentro de Safari con barras.
+4. Pulsa **Añadir**.
+5. Ábrela siempre **desde ese icono**. Si ves un aviso gris arriba que dice "Estás en Safari", algo de estos pasos falló:
+   borra el icono y repítelos.
+
+> La primera vez que abras cada app (Spotify, YouTube, Podimo) puede que iOS pregunte. Si alguna vez se abre la web
+> en lugar de la app: mantén pulsado el nombre en la lista → **Abrir en Spotify** (o la que sea). iOS lo recuerda.
+
+---
+
+## 2. Cómo se usa
+
+| Control | Un toque | Doble toque |
 |---|---|---|
-| Arriba (menú) | Principio de la lista | Ajustes |
-| Abajo (play) | Atajo "Modo iPod" | Abrir Spotify |
-| Izquierda | Anterior en la lista | Canción anterior (atajo "Anterior") |
-| Derecha | Siguiente en la lista | Canción siguiente (atajo "Siguiente") |
+| **Rueda** (girar el dedo) | Sube o baja por la lista | — |
+| **OK** (centro de la rueda) | Abre lo seleccionado | — |
+| **MENÚ** | Abre los ajustes | — |
+| **⏮ / ⏭** | Anterior / siguiente en la lista | Canción anterior / siguiente (atajos, ver paso 3) |
+| **▶︎❙❙** | Activa el modo ahorro (atajo, ver paso 3) | Abre Spotify |
 
-Los ajustes se guardan en el iPhone. Configúralos desde el icono de la pantalla de inicio, no desde Safari:
-iOS guarda por separado los datos de cada uno.
+También puedes tocar directamente cualquier nombre de la lista.
 
-## Atajos que hay que crear (app Atajos)
+### Ajustes (botón MENÚ)
+- **Cambiar o añadir botones:** pega tal cual un enlace copiado con *Compartir → Copiar enlace*
+  (una lista de Spotify, un canal o vídeo de YouTube, un podcast de Podimo). Se abre directamente en su app.
+- **Quitar un botón:** la **×** de su derecha.
+- **Restaurar:** vuelve a Spotify, YouTube y Podimo.
+- **Nombres de los atajos:** solo si les has puesto otro nombre en la app Atajos.
+- Pulsa **Listo** (arriba a la derecha) para guardar.
 
-### "Modo iPod"
-1. Ajustar modo de bajo consumo → Activado
-2. Ajustar Wi-Fi → Activado
-3. Ajustar Bluetooth → Activado
-4. Ajustar datos móviles → Activado
-5. Ajustar brillo → 25 %
-6. Ajustar concentración → No molestar → Activado
+Los ajustes se guardan en el iPhone, separados de Safari: configúralos desde el icono de la app.
 
-### "Siguiente" y "Anterior"
-Un atajo con una sola acción: **Saltar hacia delante** (o **Saltar hacia atrás**). Controla lo que esté sonando.
+---
+
+## 3. Crear los atajos (app Atajos)
+
+Ábrelos en **Atajos → pestaña "Atajos" (abajo) → botón +**. *No* uses la pestaña "Automatización" para esto.
+Para renombrar: toca el nombre de arriba → **Renombrar**. Para añadir acciones: escríbelas en **"Buscar acciones"**.
+
+### "Modo iPod" (botón ▶︎❙❙, un toque)
+| Acción | Valor | Para qué |
+|---|---|---|
+| Ajustar modo de bajo consumo | Activar | Es lo que más batería ahorra |
+| Ajustar Wi-Fi | Activar | Streaming con menos gasto que con datos |
+| Ajustar Bluetooth | Activar | Cascos o altavoz inalámbricos |
+| Ajustar datos móviles | Activar | Internet fuera de casa (quítalo si no lo necesitas) |
+| Ajustar brillo | 25 % | Menos gasto de pantalla |
+| Ajustar concentración | No molestar → Activar | Sin notificaciones que enciendan la pantalla |
+
+### "Siguiente" y "Anterior" (botones ⏭ / ⏮, doble toque)
+- **Siguiente:** una sola acción, **Saltar hacia delante**.
+- **Anterior:** una sola acción, **Saltar hacia atrás**.
+
+Controlan lo que esté sonando (Spotify, YouTube, Podimo…). Al usarlos se abre Atajos un momento y, a veces,
+iOS pregunta "¿Abrir en Atajos?": es una limitación de iOS, ninguna web puede controlar otra app directamente.
+
+---
+
+## 4. Opcional: que todo sea más automático
+
+### Activar el ahorro solo al abrir la música
+**Atajos → Automatización → +** → **App** → elige Spotify, YouTube y Podimo → **Se abre** →
+**Ejecutar inmediatamente** → acción **Ejecutar atajo → Modo iPod**.
+
+### Abrir la app con dos golpecitos en la parte de atrás del iPhone
+1. Crea un atajo **Abrir iPod** con la acción **Abrir URL** → `https://colobe46.github.io/ipod/`
+   (en iOS 26 puedes probar `webapp://colobe46.github.io/ipod/` para abrirla sin barras).
+2. **Ajustes → Accesibilidad → Tocar → Toque posterior → Doble toque → Abrir iPod**.
+
+iOS no permite que una app se abra sola al desbloquear: esto es lo más parecido.
+
+### Ver solo la app iPod al desbloquear
+Deja el icono solo en una página de la pantalla de inicio. Si quieres, crea una **Concentración** (Ajustes →
+Concentración → +) que muestre solo esa página y actívala desde "Modo iPod" con *Ajustar concentración*.
+
+---
+
+## 5. Ajustes del iPhone que conviene cambiar una vez
+- **Ajustes → General → Actualización en segundo plano:** solo Spotify, YouTube y Podimo.
+- **Ajustes → Datos móviles → Opciones → Voz y datos → 4G** (el 5G gasta más).
+- **Ajustes → Notificaciones:** desactiva las que no necesites.
+- En Spotify y Podimo, **descarga** con wifi lo que vayas a escuchar: reproducir sin conexión gasta menos.
+- **YouTube** solo suena con la pantalla bloqueada si tienes YouTube Premium.
+
+---
+
+## 6. Si algo no va bien
+
+| Problema | Solución |
+|---|---|
+| No veo la versión nueva | Cierra la app desde el selector de apps y ábrela dos veces. Si sigue igual: Ajustes → Apps → Safari → Avanzado → Datos de sitios web → borra **github.io**. |
+| Sale la barra de Safari | Borra el icono y vuelve a añadirlo con **"Abrir como app web"** activado (paso 1). |
+| Al tocar una app se abre su web | Mantén pulsado el nombre → **Abrir en …** |
+| ▶︎❙❙ o ⏮/⏭ no hacen nada | Revisa que los atajos se llaman exactamente "Modo iPod", "Siguiente" y "Anterior" (o cambia los nombres en MENÚ). |
+| He borrado un botón sin querer | MENÚ → Añadir botón (o Restaurar). |
 
 ## Batería
-La página es fija: fondo negro, sin animaciones y sin conexiones. El reloj se actualiza una vez por minuto y se para
-cuando la pantalla está apagada o estás en otra app.
+La app no hace nada por su cuenta: sin animaciones continuas, sin conexiones y con el reloj actualizándose una vez
+por minuto. iOS la congela en cuanto abres Spotify, YouTube o Podimo.

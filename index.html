@@ -7,117 +7,110 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="iPod">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#0e0e0f">
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="manifest" href="manifest.json">
 <title>iPod</title>
 <style>
-  html, body { margin: 0; height: 100%; background: #000; color: #fff;
+  :root { --ambar: #ffb340; --ambar-osc: #3a2a10; --cuerpo: #0e0e0f; --pieza: #1b1b1d; --borde: #2a2a2d; }
+  html, body { margin: 0; height: 100%; background: var(--cuerpo); color: #e8e8ea;
     font-family: -apple-system, system-ui, sans-serif;
     -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
     -webkit-tap-highlight-color: transparent; overscroll-behavior: none; overflow: hidden; }
-  body { display: flex; flex-direction: column; box-sizing: border-box;
-    padding: calc(env(safe-area-inset-top) + 20px) 28px calc(env(safe-area-inset-bottom) + 24px); }
-  a { color: #fff; text-decoration: none; display: block; }
+  body { display: flex; flex-direction: column; align-items: center; box-sizing: border-box;
+    padding: calc(env(safe-area-inset-top) + 14px) 18px calc(env(safe-area-inset-bottom) + 18px); }
+  a { color: inherit; text-decoration: none; }
 
-  /* Pantalla superior */
-  #reloj { display: flex; align-items: baseline; justify-content: space-between; }
-  #hora  { font-size: 44px; font-weight: 200; letter-spacing: -1px; line-height: 1; }
-  #fecha { font-size: 13px; color: #8e8e93; }
-  #lista { margin-top: 24px; }
-
-  #lista { flex: 1; overflow-y: auto; scrollbar-width: none; }
+  /* ---------- Pantalla LCD ---------- */
+  #pantalla { width: 100%; flex: 1 1 auto; min-height: 0; max-height: 46vh; display: flex; flex-direction: column;
+    background: #120d05; border: 1px solid var(--borde); border-radius: 18px; overflow: hidden;
+    box-shadow: inset 0 0 0 6px #0a0805; font-family: ui-monospace, Menlo, monospace; color: var(--ambar); }
+  #barra { display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 18px 10px; font-size: 13px; letter-spacing: 1px; border-bottom: 1px solid var(--ambar-osc); }
+  #barra .marca { opacity: .75; }
+  #lista { flex: 1; overflow-y: auto; padding: 8px 6px; scrollbar-width: none; }
   #lista::-webkit-scrollbar { display: none; }
-  #lista a { font-size: 32px; font-weight: 300; letter-spacing: -0.3px;
-    padding: 9px 14px; margin: 0 -14px; border-radius: 8px; }
-  #lista a.sel { background: #1f1f1f; }
+  #lista a { display: flex; justify-content: space-between; align-items: center;
+    font-size: 22px; padding: 10px 14px; border-radius: 8px; }
+  #lista a::after { content: '›'; opacity: 0; }
+  #lista a.sel { background: var(--ambar); color: #120d05; }
+  #lista a.sel::after { opacity: 1; }
 
-  #aviso-safari { position: fixed; z-index: 2; left: 12px; right: 12px; top: calc(env(safe-area-inset-top) + 8px);
-    background: #1c1c1e; color: #fff; font-size: 14px; line-height: 1.45; padding: 12px 14px; border-radius: 10px;
-    border: 1px solid #3a3a3c; }
+  /* ---------- Rueda giratoria ---------- */
+  #rueda { position: relative; flex: none; margin: 26px 0 22px; touch-action: none;
+    width: min(62vw, 260px, 32vh); aspect-ratio: 1; border-radius: 50%;
+    background: repeating-conic-gradient(from 0deg, #3a3a3e 0deg 1.2deg, transparent 1.2deg 7.5deg), var(--pieza);
+    border: 1px solid var(--borde); }
+  #disco { position: absolute; inset: 9%; border-radius: 50%; background: #151517; border: 1px solid var(--borde); }
+  #aguja { position: absolute; inset: 0; transition: transform .12s ease-out; pointer-events: none; }
+  #aguja::before { content: ''; position: absolute; left: 50%; top: 7%; width: 6px; height: 6px; margin-left: -3px;
+    border-radius: 50%; background: var(--ambar); }
+  #centro { position: absolute; inset: 30%; border-radius: 50%; background: var(--pieza); border: 1px solid var(--borde);
+    display: flex; align-items: center; justify-content: center; font: 12px ui-monospace, Menlo, monospace;
+    color: #8e8e93; letter-spacing: 1px; }
+  #rueda.pulsado #centro { background: #232326; color: var(--ambar); }
 
-  /* Fondo con foto */
-  body.con-fondo { background: #000 center / cover no-repeat; }
-  body.con-fondo #reloj, body.con-fondo #lista a, body.con-fondo .et { text-shadow: 0 1px 4px rgba(0,0,0,.8); }
-  body.con-fondo #fecha, body.con-fondo .et { color: #ddd; }
-  body.con-fondo #lista a.sel { background: rgba(0,0,0,.5); }
-  body.con-fondo .et { visibility: hidden; }
-  body.con-fondo #rueda, body.con-fondo #centro { border-color: transparent; }
-  body.sin-rueda #rueda, body.sin-rueda #centro { border-color: transparent; }
-  body.sin-rueda .et { visibility: hidden; }
-  body.sin-rueda #rueda.pulsado-centro #centro { background: rgba(255,255,255,.12); }
+  /* ---------- Botones ---------- */
+  #botones { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; flex: none; }
+  #botones > * { display: flex; align-items: center; justify-content: center; height: 52px; border-radius: 14px;
+    background: var(--pieza); border: 1px solid var(--borde); color: #d0d0d4; font-size: 18px;
+    font-family: inherit; padding: 0; }
+  #botones > *:active { background: #26262a; color: var(--ambar); }
+  #botones .txt { font: 12px ui-monospace, Menlo, monospace; letter-spacing: 1px; }
+  #b-play { font-size: 14px; letter-spacing: -1px; }
 
-  /* Encajar con un fondo de pantalla arriba y rueda abajo */
-  body.encajar { background-size: cover; }
-  body.encajar #reloj { position: fixed;
-    align-items: center; justify-content: center; text-shadow: none; }
-  body.encajar #hora { font-size: 12px; font-weight: 600; letter-spacing: 0; color: #222; }
-  body.encajar #fecha { display: none; }
-  body.encajar #lista { position: fixed; margin: 0; }
-  body.encajar #lista a { color: #111; text-shadow: none; font-size: 22px; font-weight: 500;
-    padding: 7px 12px; margin: 0; border-radius: 0; }
-  body.encajar #lista a.sel { background: #3a3a3c; color: #fff; }
-  body.encajar #rueda { position: fixed; margin: 0 !important; border-color: transparent; }
-  body.encajar #centro { inset: 32.5%; border-color: transparent; }
-  body.encajar .et { visibility: hidden; }
-  body.encajar #rueda.pulsado-centro #centro { background: rgba(255,255,255,.12); }
-
-  /* Rueda */
-  #rueda { position: relative; flex: none; align-self: center; margin-top: 18px;
-    width: var(--tam, min(74vw, 290px)); aspect-ratio: 1; margin-bottom: var(--sube, 0px); touch-action: none; border-radius: 50%;
-    border: 1px solid #2c2c2e; touch-action: none; }
-  #centro { position: absolute; inset: 31%; border-radius: 50%; border: 1px solid #2c2c2e; }
-  #rueda.pulsado-centro #centro { background: #141414; }
-  #zona-play { position: absolute; left: 30%; right: 30%; bottom: 0; height: 30%; }
-  .et { position: absolute; font: 11px ui-monospace, Menlo, monospace; color: #8e8e93; pointer-events: none; }
-  .arriba { top: 11%; left: 50%; transform: translateX(-50%); }
-  .abajo  { bottom: 11%; left: 50%; transform: translateX(-50%); }
-
-  /* Ajustes */
+  /* ---------- Ajustes ---------- */
   #ajustes { display: none; position: fixed; inset: 0; background: #000; overflow-y: auto; box-sizing: border-box;
     padding: calc(env(safe-area-inset-top) + 20px) 24px calc(env(safe-area-inset-bottom) + 24px);
-    overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+    overscroll-behavior: contain; -webkit-overflow-scrolling: touch; z-index: 3; }
   #ajustes.ver { display: block; }
   .cabecera { position: sticky; top: calc(-1 * (env(safe-area-inset-top) + 20px)); z-index: 1; background: #000;
     display: flex; align-items: center; justify-content: space-between;
     margin: calc(-1 * (env(safe-area-inset-top) + 20px)) -24px 0;
     padding: calc(env(safe-area-inset-top) + 20px) 24px 12px; border-bottom: 1px solid #222; }
   #ajustes h2 { font-size: 28px; font-weight: 300; margin: 0; }
-  #listo { border-color: #fff; }
   .fila { display: grid; grid-template-columns: 1fr auto; gap: 6px 8px; padding: 12px 0; border-bottom: 1px solid #222; }
-  input { width: 100%; box-sizing: border-box; background: #111; border: 1px solid #333; border-radius: 6px;
+  #ajustes input { width: 100%; box-sizing: border-box; background: #111; border: 1px solid #333; border-radius: 6px;
     color: #fff; font: 16px -apple-system, system-ui, sans-serif; padding: 10px;
     -webkit-user-select: text; user-select: text; }
-  button { background: none; border: 1px solid #444; border-radius: 6px; color: #fff;
+  #ajustes button { background: none; border: 1px solid #444; border-radius: 6px; color: #fff;
     font: 15px -apple-system, system-ui, sans-serif; padding: 10px 14px; }
-  button:active { background: #222; }
-  .quitar { grid-row: span 2; border: none; color: #8e8e93; font-size: 26px; padding: 0 4px; }
-  .botones { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0; }
-  label { display: block; color: #8e8e93; font-size: 13px; margin: 16px 0 6px; }
-  input[type=range] { padding: 0; border: none; background: none; accent-color: #fff; }
-  .interruptor { display: flex; align-items: center; gap: 10px; color: #fff; font-size: 15px; }
-  .interruptor input { width: 22px; height: 22px; margin: 0; accent-color: #fff; }
+  #ajustes button:active { background: #222; }
+  #listo { border-color: var(--ambar) !important; color: var(--ambar) !important; }
+  .quitar { grid-row: span 2; border: none !important; color: #8e8e93 !important; font-size: 26px !important; padding: 0 4px !important; }
+  .botones-aj { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0; }
+  #ajustes label { display: block; color: #8e8e93; font-size: 13px; margin: 16px 0 6px; }
   .ayuda { color: #8e8e93; font-size: 13px; line-height: 1.5; margin-top: 16px; }
+
+  #aviso-safari { display: none; position: fixed; z-index: 4; left: 12px; right: 12px; top: calc(env(safe-area-inset-top) + 8px);
+    background: #1c1c1e; color: #fff; font-size: 14px; line-height: 1.45; padding: 12px 14px; border-radius: 10px;
+    border: 1px solid #3a3a3c; }
 </style>
 </head>
 <body>
 
-<div id="aviso-safari" style="display:none">
+<div id="aviso-safari">
   Estás en Safari. Para verla a pantalla completa: Compartir → Añadir a pantalla de inicio →
   activa <b>Abrir como app web</b> → Añadir, y ábrela desde ese icono.
 </div>
-<header id="reloj">
-  <div id="hora">--:--</div>
-  <div id="fecha"></div>
-</header>
-<main id="lista"></main>
 
-<div id="rueda" aria-label="Rueda: gira para moverte, toca el centro para abrir">
-  <span class="et arriba">ajustes</span>
-  <span class="et abajo">ahorro</span>
-  <a id="centro" href="#" aria-label="Abrir"></a>
-  <a id="zona-play" href="https://open.spotify.com/" aria-label="Doble toque: abrir Spotify"></a>
+<section id="pantalla">
+  <div id="barra"><span class="marca">MÚSICA</span><span id="hora">--:--</span></div>
+  <main id="lista"></main>
+</section>
+
+<div id="rueda" aria-label="Gira para moverte; toca el centro para abrir">
+  <div id="disco"></div>
+  <div id="aguja"></div>
+  <a id="centro" href="#">OK</a>
 </div>
+
+<nav id="botones">
+  <button id="b-ajustes" class="txt" aria-label="Ajustes">MENÚ</button>
+  <button id="b-ant" aria-label="Anterior">⏮</button>
+  <a id="b-play" href="https://open.spotify.com/" aria-label="Ahorro; doble toque: Spotify">▶︎❙❙</a>
+  <button id="b-sig" aria-label="Siguiente">⏭</button>
+</nav>
 
 <section id="ajustes">
   <div class="cabecera">
@@ -127,29 +120,16 @@
   <p class="ayuda">Pega tal cual un enlace de Spotify, YouTube o Podimo (Compartir → Copiar enlace):
     se abrirá directamente en su app.</p>
   <div id="filas"></div>
-  <div class="botones">
+  <div class="botones-aj">
     <button id="anadir">Añadir botón</button>
     <button id="restaurar">Restaurar</button>
   </div>
-  <label>Fondo</label>
-  <div class="botones" style="margin-top:0">
-    <button id="elegir-fondo">Elegir foto</button>
-    <button id="quitar-fondo">Quitar fondo</button>
-    <button id="descargar-fondo">Descargar fondo</button>
-  </div>
-  <label class="interruptor"><input id="encajar" type="checkbox"> Encajar con el fondo</label>
-  <p class="ayuda" style="margin-top:4px">Para fondos con una pantalla arriba y una rueda abajo:
-    pone la lista dentro de la pantalla y la rueda táctil encima de la dibujada.</p>
-  <input id="archivo-fondo" type="file" accept="image/*" style="display:none">
-  <label class="interruptor"><input id="dibujar-rueda" type="checkbox"> Dibujar la rueda</label>
-  <p class="ayuda" style="margin-top:4px">Desactívalo si tu foto ya trae una rueda dibujada: la rueda seguirá funcionando igual.</p>
-  <label for="tam-rueda">Tamaño de la rueda</label>
-  <input id="tam-rueda" type="range" min="40" max="100" step="1">
-  <label for="sube-rueda">Altura de la rueda</label>
-  <input id="sube-rueda" type="range" min="0" max="400" step="2">
-  <p class="ayuda" style="margin-top:4px">Ajústalos y pulsa Listo para ver cómo encaja con tu foto.</p>
-  <label for="atajo-modo">Atajo de ahorro (modo iPod)</label>
+  <label for="atajo-modo">Atajo de ahorro</label>
   <input id="atajo-modo" autocapitalize="off" autocorrect="off">
+  <label for="atajo-sig">Atajo canción siguiente</label>
+  <input id="atajo-sig" autocapitalize="off" autocorrect="off">
+  <label for="atajo-ant">Atajo canción anterior</label>
+  <input id="atajo-ant" autocapitalize="off" autocorrect="off">
 </section>
 
 <script>
@@ -157,31 +137,27 @@
   var $ = function (id) { return document.getElementById(id); };
 
   // ---------- Configuración guardada en el iPhone ----------
+  // Enlaces web normales: iOS los pasa a la app sin preguntar "¿Abrir en…?".
   var DEF = {
-    // Enlaces web normales: iOS los pasa a la app sin preguntar "¿Abrir en…?".
     botones: [
       { n: 'Spotify', u: 'https://open.spotify.com/' },
       { n: 'YouTube', u: 'https://www.youtube.com/' },
       { n: 'Podimo',  u: 'https://open.podimo.com/' }
     ],
-    modo: 'Modo iPod',
-    v: 2
+    modo: 'Modo iPod', sig: 'Siguiente', ant: 'Anterior', v: 2
   };
   function copia(o) { return JSON.parse(JSON.stringify(o)); }
   function cargar() {
     try {
       var c = JSON.parse(localStorage.getItem('ipod'));
       if (c && c.botones) {
-        // Cambia los enlaces antiguos (spotify://…), que hacían preguntar a iOS, por los web.
         var viejos = { 'spotify://': DEF.botones[0].u, 'youtube://': DEF.botones[1].u, 'podimo://': DEF.botones[2].u };
         c.botones.forEach(function (b) { if (viejos[b.u]) b.u = viejos[b.u]; delete b.w; });
-        // Una sola vez: recupera Podimo si se borró sin querer.
         if (!c.v) {
-          var tiene = c.botones.some(function (b) { return /podimo/i.test(b.u); });
-          if (!tiene) c.botones.push(copia(DEF.botones[2]));
+          if (!c.botones.some(function (b) { return /podimo/i.test(b.u); })) c.botones.push(copia(DEF.botones[2]));
           c.v = 2;
-          try { localStorage.setItem('ipod', JSON.stringify(c)); } catch (e) {}
         }
+        if (!c.botones.length) c.botones = copia(DEF.botones);
         return c;
       }
     } catch (e) {}
@@ -189,38 +165,34 @@
   }
   function guardar() { try { localStorage.setItem('ipod', JSON.stringify(cfg)); } catch (e) {} }
   var cfg = cargar();
+  try { localStorage.removeItem('ipod-fondo'); } catch (e) {}   // ya no se usa: libera espacio
 
-  // ---------- Enlaces ----------
-  // Todo se abre con enlaces reales (<a href>) tocados con el dedo: es lo que
-  // permite a iOS abrir la app directamente, sin el aviso "¿Abrir en…?".
-  function urlAtajo(nombre) {
-    return 'shortcuts://run-shortcut?name=' + encodeURIComponent(nombre);
-  }
+  function urlAtajo(nombre) { return 'shortcuts://run-shortcut?name=' + encodeURIComponent(nombre); }
 
   // ---------- Lista ----------
   var sel = 0;
-  function elementos() { return cfg.botones; }
   function pintar() {
-    var l = $('lista'), els = elementos();
+    var l = $('lista');
     l.textContent = '';
-    if (sel >= els.length) sel = Math.max(0, els.length - 1);
-    els.forEach(function (b, i) {
+    if (sel >= cfg.botones.length) sel = 0;
+    cfg.botones.forEach(function (b, i) {
       var a = document.createElement('a');
       a.href = b.u;
       a.textContent = b.n;
       if (i === sel) a.className = 'sel';
       l.appendChild(a);
     });
-    centro();
     var sp = cfg.botones.filter(function (b) { return /spotify/i.test(b.u); })[0];
-    $('zona-play').href = sp ? sp.u : 'https://open.spotify.com/';
+    $('b-play').href = sp ? sp.u : 'https://open.spotify.com/';
+    actualizar();
   }
-  function centro() {
-    var b = elementos()[sel];
+  function actualizar() {
+    var b = cfg.botones[sel];
     $('centro').href = b ? b.u : '#';
+    $('aguja').style.transform = 'rotate(' + (sel * 30) + 'deg)';
   }
   function mover(paso) {
-    var n = elementos().length;
+    var n = cfg.botones.length;
     if (!n) return;
     var nuevo = Math.min(n - 1, Math.max(0, sel + paso));
     if (nuevo === sel) return;
@@ -229,22 +201,11 @@
     sel = nuevo;
     as[sel].className = 'sel';
     as[sel].scrollIntoView({ block: 'nearest' });
-    centro();
+    actualizar();
   }
-  $('centro').onclick = function (e) {
-    if ($('centro').getAttribute('href') === '#') e.preventDefault();
-  };
 
-  // ---------- Rueda ----------
-  // Girar mueve la selección (un paso cada 24°). Centro = abrir lo seleccionado.
-  //            un toque                 doble toque
-  // arriba     principio de la lista    ajustes
-  // abajo      ahorro                   abrir Spotify
-  // izquierda  anterior en la lista     canción anterior (atajo "Anterior")
-  // derecha    siguiente en la lista    canción siguiente (atajo "Siguiente")
-  var rueda = $('rueda');
-  var PASO = 24, g = null;
-
+  // ---------- Rueda: girar mueve la selección; tocar el centro abre ----------
+  var rueda = $('rueda'), PASO = 24, g = null;
   function geo(e) {
     var r = rueda.getBoundingClientRect();
     var dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
@@ -252,90 +213,65 @@
   }
   rueda.addEventListener('pointerdown', function (e) {
     var p = geo(e);
-    g = { ang: p.ang, acum: 0, total: 0, centro: p.dist < p.radio * 0.38, inicio: p };
-    // En el centro y en "play" no se captura el dedo, para que el toque llegue al enlace tal cual
-    // (así iOS abre la app sin preguntar).
-    if (g.centro) rueda.classList.add('pulsado-centro');
-    else if (e.target !== $('zona-play')) rueda.setPointerCapture(e.pointerId);
+    g = { ang: p.ang, acum: 0, total: 0 };
+    rueda.classList.add('pulsado');
+    // No se captura el dedo si empieza en el centro: así el toque llega al enlace
+    // y iOS abre la app sin preguntar.
+    if (p.dist > p.radio * 0.4) rueda.setPointerCapture(e.pointerId);
   });
   rueda.addEventListener('pointermove', function (e) {
     if (!g) return;
     var p = geo(e);
-    if (p.dist < p.radio * 0.2) return;          // demasiado cerca del centro para medir el giro
+    if (p.dist < p.radio * 0.2) return;
     var d = p.ang - g.ang;
     if (d > 180) d -= 360; else if (d < -180) d += 360;
     g.ang = p.ang; g.acum += d; g.total += Math.abs(d);
     while (g.acum >= PASO)  { mover(1);  g.acum -= PASO; }
     while (g.acum <= -PASO) { mover(-1); g.acum += PASO; }
   });
-  function soltar() {
-    rueda.classList.remove('pulsado-centro');
-    if (!g) return;
-    var giro = g.total > 10, p = g.inicio;
-    var centro = g.centro;
-    g = null;
-    if (giro) { clicPlay = false; return; }
-    if (centro) return;                          // el toque en el centro lo abre el propio enlace
-    tocar(zonaDe(p.ang));
-  }
-
-  // Toques simples y dobles
-  var DOBLE_MS = 350, pendiente = null, clicPlay = false;
-  function zonaDe(a) {                           // 0° = derecha, 90° = abajo
-    if (a > -135 && a < -45) return 'menu';
-    if (a > 45 && a < 135) return 'play';
-    if (a >= -45 && a <= 45) return 'sig';
-    return 'ant';
-  }
-  var SIMPLE = {
-    menu: function () { mover(-elementos().length); },
-    play: function () { location.href = urlAtajo(cfg.modo); },
-    sig:  function () { mover(1); },
-    ant:  function () { mover(-1); }
-  };
-  var DOBLE = {
-    menu: abrirAjustes,
-    sig:  function () { location.href = urlAtajo(cfg.sig || 'Siguiente'); },
-    ant:  function () { location.href = urlAtajo(cfg.ant || 'Anterior'); }
-  };
-  function tocar(zona) {
-    var ahora = Date.now();
-    if (pendiente && pendiente.zona === zona && ahora - pendiente.t < DOBLE_MS) {
-      clearTimeout(pendiente.timer); pendiente = null;
-      if (zona === 'play') clicPlay = true;      // deja pasar el toque: el enlace abre Spotify
-      else DOBLE[zona]();
-      return;
-    }
-    if (pendiente) { clearTimeout(pendiente.timer); SIMPLE[pendiente.zona](); }
-    pendiente = { zona: zona, t: ahora, timer: setTimeout(function () {
-      var z = pendiente.zona; pendiente = null; SIMPLE[z]();
-    }, DOBLE_MS) };
-  }
-  $('zona-play').addEventListener('click', function (e) {
-    if (!clicPlay) e.preventDefault();
-    clicPlay = false;
-  });
+  function soltar() { rueda.classList.remove('pulsado'); girado = g && g.total > 10; g = null; }
+  var girado = false;
   rueda.addEventListener('pointerup', soltar);
-  rueda.addEventListener('pointercancel', function () { rueda.classList.remove('pulsado-centro'); g = null; });
+  rueda.addEventListener('pointercancel', soltar);
+  $('centro').addEventListener('click', function (e) {
+    if (girado || $('centro').getAttribute('href') === '#') e.preventDefault();
+    girado = false;
+  });
+
+  // ---------- Botones: un toque y doble toque ----------
+  //            un toque                doble toque
+  // MENÚ       ajustes                 —
+  // ⏮ / ⏭      anterior / siguiente    canción anterior / siguiente (atajos)
+  // ▶︎❙❙        ahorro (atajo)          abrir Spotify
+  var DOBLE_MS = 350;
+  function dobleToque(el, simple, doble) {
+    var t = null;
+    el.addEventListener('click', function (e) {
+      if (t) { clearTimeout(t); t = null; doble(e); return; }
+      if (el.tagName === 'A') e.preventDefault();
+      t = setTimeout(function () { t = null; simple(); }, DOBLE_MS);
+    });
+  }
+  $('b-ajustes').onclick = abrirAjustes;
+  dobleToque($('b-ant'), function () { mover(-1); }, function () { location.href = urlAtajo(cfg.ant || DEF.ant); });
+  dobleToque($('b-sig'), function () { mover(1); },  function () { location.href = urlAtajo(cfg.sig || DEF.sig); });
+  // En el segundo toque se deja pasar el enlace: es un toque real y Spotify se abre sin aviso.
+  dobleToque($('b-play'), function () { location.href = urlAtajo(cfg.modo || DEF.modo); }, function () {});
 
   // ---------- Reloj: una vez por minuto, parado con la pantalla apagada ----------
   var t;
   function reloj() {
     var d = new Date();
     $('hora').textContent = d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-    $('fecha').textContent = d.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' });
     clearTimeout(t);
     t = setTimeout(reloj, 60000 - d.getSeconds() * 1000 - d.getMilliseconds() + 50);
   }
-  document.addEventListener('visibilitychange', function () {
-    if (document.hidden) clearTimeout(t); else reloj();
-  });
+  document.addEventListener('visibilitychange', function () { if (document.hidden) clearTimeout(t); else reloj(); });
 
   // ---------- Ajustes ----------
   function fila(b) {
     var d = document.createElement('div');
     d.className = 'fila';
-    d.dataset.w = b.w || '';
     var n = document.createElement('input');
     n.className = 'n'; n.placeholder = 'Nombre'; n.value = b.n || '';
     var u = document.createElement('input');
@@ -351,141 +287,30 @@
     var f = $('filas');
     f.textContent = '';
     c.botones.forEach(function (b) { f.appendChild(fila(b)); });
-    $('atajo-modo').value = c.modo;
-    $('dibujar-rueda').checked = c.rueda !== false;
-    $('encajar').checked = c.encajar !== false;
-    $('tam-rueda').value = c.rTam || 74;
-    $('sube-rueda').value = c.rSube || 0;
+    $('atajo-modo').value = c.modo || DEF.modo;
+    $('atajo-sig').value = c.sig || DEF.sig;
+    $('atajo-ant').value = c.ant || DEF.ant;
   }
   function abrirAjustes() { rellenar(cfg); $('ajustes').scrollTop = 0; $('ajustes').classList.add('ver'); }
-
   $('anadir').onclick = function () { $('filas').appendChild(fila({})); };
-  $('restaurar').onclick = function () {
-    var d = copia(DEF); d.rueda = cfg.rueda; d.rTam = cfg.rTam; d.rSube = cfg.rSube; d.encajar = cfg.encajar;
-    rellenar(d);
-  };
+  $('restaurar').onclick = function () { rellenar(copia(DEF)); };
   $('listo').onclick = function () {
     cfg.botones = Array.prototype.map.call($('filas').children, function (d) {
-      var b = { n: d.querySelector('.n').value.trim(), u: d.querySelector('.u').value.trim() };
-      if (d.dataset.w) b.w = d.dataset.w;
-      return b;
+      return { n: d.querySelector('.n').value.trim(), u: d.querySelector('.u').value.trim() };
     }).filter(function (b) { return b.n && b.u; });
     if (!cfg.botones.length) cfg.botones = copia(DEF.botones);   // nunca dejar la lista vacía
     cfg.modo = $('atajo-modo').value.trim() || DEF.modo;
-    cfg.rueda = $('dibujar-rueda').checked;
-    cfg.encajar = $('encajar').checked;
-    cfg.rTam = +$('tam-rueda').value;
-    cfg.rSube = +$('sube-rueda').value;
-    aplicarAspecto();
+    cfg.sig = $('atajo-sig').value.trim() || DEF.sig;
+    cfg.ant = $('atajo-ant').value.trim() || DEF.ant;
     guardar();
     sel = 0;
     pintar();
     $('ajustes').classList.remove('ver');
   };
 
-  // ---------- Fondo: foto del carrete, guardada solo en este iPhone ----------
-  function fondoGuardado() { try { return localStorage.getItem('ipod-fondo'); } catch (e) { return null; } }
-  function aplicarAspecto() {
-    var f = fondoGuardado();
-    document.body.classList.toggle('con-fondo', !!f);
-    document.body.style.backgroundImage = f ? 'url(' + f + ')' : '';
-    document.body.classList.toggle('sin-rueda', cfg.rueda === false);
-    document.body.classList.toggle('encajar', !!(f && cfg.encajar !== false));
-    if (f && f !== fondoMedido) medirFondo(f); else colocar();
-    var r = $('rueda').style;
-    if (cfg.rTam) r.setProperty('--tam', cfg.rTam + 'vw'); else r.removeProperty('--tam');
-    r.setProperty('--sube', (cfg.rSube || 0) + 'px');
-  }
-  // Coloca la lista y la rueda sobre la imagen según su tamaño real, sin deformarla.
-  // Posiciones relativas a la imagen: pantalla arriba y rueda abajo.
-  var dimFondo = null, fondoMedido = null;
-  function medirFondo(f) {
-    var im = new Image();
-    im.onload = function () { dimFondo = { w: im.naturalWidth, h: im.naturalHeight }; fondoMedido = f; colocar(); };
-    im.src = f;
-  }
-  function poner(el, x, y, w, h) {
-    el.style.left = x + 'px'; el.style.top = y + 'px'; el.style.width = w + 'px';
-    if (h != null) el.style.height = h + 'px';
-  }
-  function colocar() {
-    var els = [$('reloj'), $('lista'), $('rueda')];
-    if (!document.body.classList.contains('encajar') || !dimFondo) {
-      els.forEach(function (el) { ['left', 'top', 'width', 'height'].forEach(function (k) { el.style[k] = ''; }); });
-      return;
-    }
-    var W = window.innerWidth, H = window.innerHeight;
-    var k = Math.max(W / dimFondo.w, H / dimFondo.h);        // igual que background-size: cover
-    var iw = dimFondo.w * k, ih = dimFondo.h * k;
-    var ox = (W - iw) / 2, oy = (H - ih) / 2;
-    poner($('reloj'), ox + 0.067 * iw, oy + 0.082 * ih, 0.87 * iw, 0.024 * ih);
-    poner($('lista'), ox + 0.067 * iw, oy + 0.108 * ih, 0.87 * iw, 0.28 * ih);
-    var d = 0.713 * iw;
-    poner($('rueda'), ox + 0.5 * iw - d / 2, oy + 0.687 * ih - d / 2, d, d);
-  }
-  window.addEventListener('resize', colocar);
-
-  $('elegir-fondo').onclick = function () { $('archivo-fondo').click(); };
-  $('quitar-fondo').onclick = function () {
-    try { localStorage.removeItem('ipod-fondo'); } catch (e) {}
-    aplicarAspecto();
-  };
-  $('archivo-fondo').onchange = function () {
-    var archivo = this.files && this.files[0];
-    this.value = '';
-    if (!archivo) return;
-    var img = new Image(), url = URL.createObjectURL(archivo);
-    img.onload = function () {
-      // Se reduce al tamaño de la pantalla para que ocupe poco y cargue al instante.
-      var maxAncho = Math.round(screen.width * (window.devicePixelRatio || 2));
-      var esc = Math.min(1, maxAncho / img.width);
-      var c = document.createElement('canvas');
-      c.width = Math.round(img.width * esc); c.height = Math.round(img.height * esc);
-      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-      URL.revokeObjectURL(url);
-      var calidades = [0.85, 0.7, 0.55], guardado = false;
-      for (var i = 0; i < calidades.length && !guardado; i++) {
-        try { localStorage.setItem('ipod-fondo', c.toDataURL('image/jpeg', calidades[i])); guardado = true; } catch (e) {}
-      }
-      if (!guardado) alertaFondo();
-      else { cfg.encajar = true; $('encajar').checked = true; guardar(); }
-      aplicarAspecto();
-    };
-    img.src = url;
-  };
-  $('descargar-fondo').onclick = function () {
-    var f = fondoGuardado();
-    if (!f) { avisoFondo('Primero elige una foto de fondo.'); return; }
-    fetch(f).then(function (r) { return r.blob(); }).then(function (blob) {
-      var archivo = new File([blob], 'fondo-ipod.jpg', { type: 'image/jpeg' });
-      if (navigator.canShare && navigator.canShare({ files: [archivo] })) {
-        navigator.share({ files: [archivo] }).catch(function () {});
-      } else {
-        var a = document.createElement('a');
-        a.href = f; a.download = 'fondo-ipod.jpg';
-        document.body.appendChild(a); a.click(); a.remove();
-      }
-    });
-  };
-  function avisoFondo(texto) {
-    var p = document.createElement('p');
-    p.className = 'ayuda'; p.style.color = '#ff6b6b'; p.textContent = texto;
-    $('elegir-fondo').parentNode.after(p);
-    setTimeout(function () { p.remove(); }, 4000);
-  }
-  function alertaFondo() {
-    var p = document.createElement('p');
-    p.className = 'ayuda'; p.style.color = '#ff6b6b';
-    p.textContent = 'La foto es demasiado grande para guardarla. Prueba con otra.';
-    $('elegir-fondo').parentNode.after(p);
-  }
-
-  // Aviso si se abre dentro de Safari en vez de como app web (solo en iPhone).
   if (navigator.standalone === false) $('aviso-safari').style.display = 'block';
-
   pintar();
   reloj();
-  aplicarAspecto();
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 })();
 </script>
