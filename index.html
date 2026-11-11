@@ -59,17 +59,32 @@
   body.tema-foto .op { display: none; }
 
 
+  /* ---------- Relieve (sutil) ---------- */
+  body { background-image: linear-gradient(180deg, rgba(255,255,255,.035), rgba(0,0,0,.25)); }
+  #pantalla { box-shadow: inset 0 0 0 6px #0a0805, inset 0 3px 12px rgba(0,0,0,.7), 0 1px 0 rgba(255,255,255,.05); }
+  #lista a.sel { box-shadow: 0 1px 6px rgba(0,0,0,.35); }
+  #rueda { box-shadow: 0 12px 26px rgba(0,0,0,.55), 0 2px 4px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.07); }
+  #disco { background: radial-gradient(circle at 50% 30%, #1d1d20, #111113 75%);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.05), inset 0 -2px 6px rgba(0,0,0,.5); }
+  #centro { background: radial-gradient(circle at 50% 30%, #26262a, #18181b);
+    box-shadow: 0 3px 8px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.08); }
+  #rueda.pulsado #centro { background: #1c1c1f; box-shadow: inset 0 2px 6px rgba(0,0,0,.7); }
+
   /* ---------- Tema "Claro": fondo a elegir, pantalla blanca y rueda gris oscura ---------- */
-  body.tema-claro { background: var(--fondo-claro, #c9c9ce); }
-  body.tema-claro #pantalla { background: #fff; color: #111; border-color: rgba(0,0,0,.35); box-shadow: inset 0 0 0 1px #e2e2e2; }
+  body.tema-claro { background-color: var(--fondo-claro, #c9c9ce);
+    background-image: linear-gradient(180deg, rgba(255,255,255,.22), rgba(255,255,255,0) 40%, rgba(0,0,0,.14)); }
+  body.tema-claro #pantalla { background: #fff; color: #111; border-color: rgba(0,0,0,.4);
+    box-shadow: 0 0 0 3px rgba(0,0,0,.12), inset 0 2px 7px rgba(0,0,0,.2), 0 1px 0 4px rgba(255,255,255,.18); }
   body.tema-claro #barra { justify-content: center; color: #222; border-bottom-color: #dcdcdc; font-weight: 600; }
   body.tema-claro #barra .marca { display: none; }
-  body.tema-claro #lista a.sel { background: #3a3a3c; color: #fff; }
-  body.tema-claro #rueda { background: #2c2c2e; border-color: rgba(0,0,0,.4); }
+  body.tema-claro #lista a.sel { background: linear-gradient(#4a4a4d, #2f2f31); color: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.3); }
+  body.tema-claro #rueda { background: radial-gradient(circle at 50% 28%, #3b3b3e, #262628 72%); border-color: rgba(0,0,0,.45);
+    box-shadow: 0 10px 22px rgba(0,0,0,.35), 0 2px 4px rgba(0,0,0,.25), inset 0 1px 1px rgba(255,255,255,.14), inset 0 -3px 6px rgba(0,0,0,.35); }
   body.tema-claro #disco { display: none; }
   body.tema-claro #aguja::before { background: #f2f2f2; opacity: .55; }
-  body.tema-claro #centro { background: #3a3a3c; border-color: rgba(0,0,0,.4); color: #f2f2f2; }
-  body.tema-claro #rueda.pulsado #centro { background: #48484b; color: #fff; }
+  body.tema-claro #centro { background: radial-gradient(circle at 50% 28%, #4c4c50, #313134); border-color: rgba(0,0,0,.5);
+    color: #f2f2f2; box-shadow: 0 2px 5px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.16); }
+  body.tema-claro #rueda.pulsado #centro { background: #2c2c2e; color: #fff; box-shadow: inset 0 2px 6px rgba(0,0,0,.6); }
   body.tema-claro .op { color: #ececec; }
   body.tema-claro .op.armada { color: #fff; text-shadow: 0 0 8px rgba(255,255,255,.8); }
 
@@ -84,9 +99,11 @@
   body.tema-foto #lista { padding: 0; }
   body.tema-foto #lista a { font-size: 22px; font-weight: 500; padding: 7px 12px; border-radius: 0; }
   body.tema-foto #lista a.sel { background: #3a3a3c; color: #fff; }
-  body.tema-foto #rueda { position: fixed; margin: 0; background: none; border-color: transparent; }
+  body.tema-foto { background-image: none; }
+  body.tema-foto #rueda { position: fixed; margin: 0; background: none; border-color: transparent; box-shadow: none; }
+  body.tema-foto #pantalla, body.tema-foto #lista a.sel { box-shadow: none; }
   body.tema-foto #disco, body.tema-foto #aguja { display: none; }
-  body.tema-foto #centro { inset: 32.5%; background: transparent; border-color: transparent; color: transparent; }
+  body.tema-foto #centro { inset: 32.5%; background: transparent; border-color: transparent; color: transparent; box-shadow: none; }
   body.tema-foto #rueda.pulsado #centro { background: rgba(255,255,255,.12); }
 
   /* ---------- Ajustes ---------- */
