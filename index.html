@@ -182,8 +182,8 @@
   </div>
 
   <div class="pagina" data-p="botones">
-    <p class="ayuda">Pega tal cual un enlace de Spotify, YouTube o Podimo (Compartir → Copiar enlace):
-      se abrirá directamente en su app.</p>
+    <p class="ayuda">Pega tal cual un enlace de Spotify o YouTube (Compartir → Copiar enlace): se abrirá directamente
+      en su app. Para Podimo usa <b>podimo://</b> (sus enlaces web no abren la app).</p>
     <div id="filas"></div>
     <div class="botones-aj">
       <button id="anadir">Añadir botón</button>
@@ -257,7 +257,8 @@
     botones: [
       { n: 'Spotify', u: 'https://open.spotify.com/' },
       { n: 'YouTube', u: 'https://www.youtube.com/' },
-      { n: 'Podimo',  u: 'https://open.podimo.com/' }
+      // Podimo no abre su app con enlaces web: se usa su enlace propio (iOS pregunta "¿Abrir en Podimo?").
+      { n: 'Podimo',  u: 'podimo://' }
     ],
     modo: 'Modo iPod', pp: 'Play Pausa', sig: 'Siguiente', ant: 'Anterior', v: 2
   };
@@ -266,8 +267,12 @@
     try {
       var c = JSON.parse(localStorage.getItem('ipod'));
       if (c && c.botones) {
-        var viejos = { 'spotify://': DEF.botones[0].u, 'youtube://': DEF.botones[1].u, 'podimo://': DEF.botones[2].u };
-        c.botones.forEach(function (b) { if (viejos[b.u]) b.u = viejos[b.u]; delete b.w; });
+        var viejos = { 'spotify://': DEF.botones[0].u, 'youtube://': DEF.botones[1].u };
+        c.botones.forEach(function (b) {
+          if (viejos[b.u]) b.u = viejos[b.u];
+          if (/^https?:\/\/([a-z0-9-]+\.)*podimo\.com/i.test(b.u)) b.u = 'podimo://';   // la web de Podimo no abre la app
+          delete b.w;
+        });
         if (!c.v) {
           if (!c.botones.some(function (b) { return /podimo/i.test(b.u); })) c.botones.push(copia(DEF.botones[2]));
           c.v = 2;
