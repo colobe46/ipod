@@ -48,17 +48,16 @@
   body.sin-rueda #rueda.pulsado-centro #centro { background: rgba(255,255,255,.12); }
 
   /* Encajar con un fondo de pantalla arriba y rueda abajo */
-  body.encajar { background-size: 100% 100%; }
-  body.encajar #reloj { position: fixed; left: 6.7%; width: 87%; top: 8.2%; height: 2.4%;
+  body.encajar { background-size: cover; }
+  body.encajar #reloj { position: fixed;
     align-items: center; justify-content: center; text-shadow: none; }
   body.encajar #hora { font-size: 12px; font-weight: 600; letter-spacing: 0; color: #222; }
   body.encajar #fecha { display: none; }
-  body.encajar #lista { position: fixed; left: 6.7%; width: 87%; top: 10.8%; height: 28%; margin: 0; }
+  body.encajar #lista { position: fixed; margin: 0; }
   body.encajar #lista a { color: #111; text-shadow: none; font-size: 22px; font-weight: 500;
     padding: 7px 12px; margin: 0; border-radius: 0; }
   body.encajar #lista a.sel { background: #3a3a3c; color: #fff; }
-  body.encajar #rueda { position: fixed; left: 50%; top: 68.7%; width: 71.3vw !important; margin: 0 !important;
-    transform: translate(-50%, -50%); border-color: transparent; }
+  body.encajar #rueda { position: fixed; margin: 0 !important; border-color: transparent; }
   body.encajar #centro { inset: 32.5%; border-color: transparent; }
   body.encajar .et { visibility: hidden; }
   body.encajar #rueda.pulsado-centro #centro { background: rgba(255,255,255,.12); }
@@ -371,6 +370,7 @@
       if (d.dataset.w) b.w = d.dataset.w;
       return b;
     }).filter(function (b) { return b.n && b.u; });
+    if (!cfg.botones.length) cfg.botones = copia(DEF.botones);   // nunca dejar la lista vacía
     cfg.modo = $('atajo-modo').value.trim() || DEF.modo;
     cfg.rueda = $('dibujar-rueda').checked;
     cfg.encajar = $('encajar').checked;
@@ -391,10 +391,40 @@
     document.body.style.backgroundImage = f ? 'url(' + f + ')' : '';
     document.body.classList.toggle('sin-rueda', cfg.rueda === false);
     document.body.classList.toggle('encajar', !!(f && cfg.encajar !== false));
+    if (f && f !== fondoMedido) medirFondo(f); else colocar();
     var r = $('rueda').style;
     if (cfg.rTam) r.setProperty('--tam', cfg.rTam + 'vw'); else r.removeProperty('--tam');
     r.setProperty('--sube', (cfg.rSube || 0) + 'px');
   }
+  // Coloca la lista y la rueda sobre la imagen según su tamaño real, sin deformarla.
+  // Posiciones relativas a la imagen: pantalla arriba y rueda abajo.
+  var dimFondo = null, fondoMedido = null;
+  function medirFondo(f) {
+    var im = new Image();
+    im.onload = function () { dimFondo = { w: im.naturalWidth, h: im.naturalHeight }; fondoMedido = f; colocar(); };
+    im.src = f;
+  }
+  function poner(el, x, y, w, h) {
+    el.style.left = x + 'px'; el.style.top = y + 'px'; el.style.width = w + 'px';
+    if (h != null) el.style.height = h + 'px';
+  }
+  function colocar() {
+    var els = [$('reloj'), $('lista'), $('rueda')];
+    if (!document.body.classList.contains('encajar') || !dimFondo) {
+      els.forEach(function (el) { ['left', 'top', 'width', 'height'].forEach(function (k) { el.style[k] = ''; }); });
+      return;
+    }
+    var W = window.innerWidth, H = window.innerHeight;
+    var k = Math.max(W / dimFondo.w, H / dimFondo.h);        // igual que background-size: cover
+    var iw = dimFondo.w * k, ih = dimFondo.h * k;
+    var ox = (W - iw) / 2, oy = (H - ih) / 2;
+    poner($('reloj'), ox + 0.067 * iw, oy + 0.082 * ih, 0.87 * iw, 0.024 * ih);
+    poner($('lista'), ox + 0.067 * iw, oy + 0.108 * ih, 0.87 * iw, 0.28 * ih);
+    var d = 0.713 * iw;
+    poner($('rueda'), ox + 0.5 * iw - d / 2, oy + 0.687 * ih - d / 2, d, d);
+  }
+  window.addEventListener('resize', colocar);
+
   $('elegir-fondo').onclick = function () { $('archivo-fondo').click(); };
   $('quitar-fondo').onclick = function () {
     try { localStorage.removeItem('ipod-fondo'); } catch (e) {}
