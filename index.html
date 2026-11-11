@@ -63,10 +63,11 @@
 
   /* Rueda */
   #rueda { position: relative; flex: none; align-self: center; margin-top: 18px;
-    width: var(--tam, min(74vw, 290px)); aspect-ratio: 1; margin-bottom: var(--sube, 0px); border-radius: 50%;
+    width: var(--tam, min(74vw, 290px)); aspect-ratio: 1; margin-bottom: var(--sube, 0px); touch-action: none; border-radius: 50%;
     border: 1px solid #2c2c2e; touch-action: none; }
   #centro { position: absolute; inset: 31%; border-radius: 50%; border: 1px solid #2c2c2e; }
   #rueda.pulsado-centro #centro { background: #141414; }
+  #zona-play { position: absolute; left: 30%; right: 30%; bottom: 0; height: 30%; }
   .et { position: absolute; font: 11px ui-monospace, Menlo, monospace; color: #8e8e93; pointer-events: none; }
   .arriba { top: 11%; left: 50%; transform: translateX(-50%); }
   .abajo  { bottom: 11%; left: 50%; transform: translateX(-50%); }
@@ -114,6 +115,7 @@
   <span class="et arriba">ajustes</span>
   <span class="et abajo">ahorro</span>
   <a id="centro" href="#" aria-label="Abrir"></a>
+  <a id="zona-play" href="https://open.spotify.com/" aria-label="Doble toque: abrir Spotify"></a>
 </div>
 
 <section id="ajustes">
@@ -209,6 +211,8 @@
       l.appendChild(a);
     });
     centro();
+    var sp = cfg.botones.filter(function (b) { return /spotify/i.test(b.u); })[0];
+    $('zona-play').href = sp ? sp.u : 'https://open.spotify.com/';
   }
   function centro() {
     var b = elementos()[sel];
@@ -231,8 +235,12 @@
   };
 
   // ---------- Rueda ----------
-  // Girar mueve la selección (un paso cada 24°). Tocar: centro = abrir,
-  // arriba = ajustes, abajo = ahorro, izquierda/derecha = anterior/siguiente.
+  // Girar mueve la selección (un paso cada 24°). Centro = abrir lo seleccionado.
+  //            un toque                 doble toque
+  // arriba     principio de la lista    ajustes
+  // abajo      ahorro                   abrir Spotify
+  // izquierda  anterior en la lista     canción anterior (atajo "Anterior")
+  // derecha    siguiente en la lista    canción siguiente (atajo "Siguiente")
   var rueda = $('rueda');
   var PASO = 24, g = null;
 
@@ -244,9 +252,10 @@
   rueda.addEventListener('pointerdown', function (e) {
     var p = geo(e);
     g = { ang: p.ang, acum: 0, total: 0, centro: p.dist < p.radio * 0.38, inicio: p };
-    // En el centro no se captura el dedo, para que el toque llegue al enlace tal cual.
+    // En el centro y en "play" no se captura el dedo, para que el toque llegue al enlace tal cual
+    // (así iOS abre la app sin preguntar).
     if (g.centro) rueda.classList.add('pulsado-centro');
-    else rueda.setPointerCapture(e.pointerId);
+    else if (e.target !== $('zona-play')) rueda.setPointerCapture(e.pointerId);
   });
   rueda.addEventListener('pointermove', function (e) {
     if (!g) return;
@@ -264,13 +273,47 @@
     var giro = g.total > 10, p = g.inicio;
     var centro = g.centro;
     g = null;
-    if (giro || centro) return;                  // el toque en el centro lo abre el propio enlace
-    var a = p.ang;                               // 0° = derecha, 90° = abajo
-    if (a > -135 && a < -45) abrirAjustes();
-    else if (a > 45 && a < 135) location.href = urlAtajo(cfg.modo);
-    else if (a >= -45 && a <= 45) mover(1);
-    else mover(-1);
+    if (giro) { clicPlay = false; return; }
+    if (centro) return;                          // el toque en el centro lo abre el propio enlace
+    tocar(zonaDe(p.ang));
   }
+
+  // Toques simples y dobles
+  var DOBLE_MS = 350, pendiente = null, clicPlay = false;
+  function zonaDe(a) {                           // 0° = derecha, 90° = abajo
+    if (a > -135 && a < -45) return 'menu';
+    if (a > 45 && a < 135) return 'play';
+    if (a >= -45 && a <= 45) return 'sig';
+    return 'ant';
+  }
+  var SIMPLE = {
+    menu: function () { mover(-elementos().length); },
+    play: function () { location.href = urlAtajo(cfg.modo); },
+    sig:  function () { mover(1); },
+    ant:  function () { mover(-1); }
+  };
+  var DOBLE = {
+    menu: abrirAjustes,
+    sig:  function () { location.href = urlAtajo(cfg.sig || 'Siguiente'); },
+    ant:  function () { location.href = urlAtajo(cfg.ant || 'Anterior'); }
+  };
+  function tocar(zona) {
+    var ahora = Date.now();
+    if (pendiente && pendiente.zona === zona && ahora - pendiente.t < DOBLE_MS) {
+      clearTimeout(pendiente.timer); pendiente = null;
+      if (zona === 'play') clicPlay = true;      // deja pasar el toque: el enlace abre Spotify
+      else DOBLE[zona]();
+      return;
+    }
+    if (pendiente) { clearTimeout(pendiente.timer); SIMPLE[pendiente.zona](); }
+    pendiente = { zona: zona, t: ahora, timer: setTimeout(function () {
+      var z = pendiente.zona; pendiente = null; SIMPLE[z]();
+    }, DOBLE_MS) };
+  }
+  $('zona-play').addEventListener('click', function (e) {
+    if (!clicPlay) e.preventDefault();
+    clicPlay = false;
+  });
   rueda.addEventListener('pointerup', soltar);
   rueda.addEventListener('pointercancel', function () { rueda.classList.remove('pulsado-centro'); g = null; });
 

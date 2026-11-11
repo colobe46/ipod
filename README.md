@@ -6,11 +6,14 @@ Es una página web que se añade a la pantalla de inicio desde Safari, sin App S
 **Abrir en el iPhone:** https://colobe46.github.io/ipod/ → Safari → Compartir → *Añadir a pantalla de inicio*.
 
 ## Uso: la rueda
-- **Gira el dedo** sobre la rueda para moverte por la lista. **Toca el centro** para abrir.
-- **ajustes** (arriba): cambiar, añadir o quitar botones. Pega un enlace de *Compartir → Copiar enlace*
-  (una lista de Spotify, un canal de YouTube, un podcast de Podimo).
-- **ahorro** (abajo): ejecuta el atajo "Modo iPod".
-- También puedes tocar directamente cualquier nombre de la lista.
+Gira el dedo para moverte por la lista y toca el centro para abrir.
+
+| Zona | Un toque | Doble toque |
+|---|---|---|
+| Arriba (menú) | Principio de la lista | Ajustes |
+| Abajo (play) | Atajo "Modo iPod" | Abrir Spotify |
+| Izquierda | Anterior en la lista | Canción anterior (atajo "Anterior") |
+| Derecha | Siguiente en la lista | Canción siguiente (atajo "Siguiente") |
 
 Los ajustes se guardan en el iPhone. Configúralos desde el icono de la pantalla de inicio, no desde Safari:
 iOS guarda por separado los datos de cada uno.
@@ -24,6 +27,9 @@ iOS guarda por separado los datos de cada uno.
 4. Ajustar datos móviles → Activado
 5. Ajustar brillo → 25 %
 6. Ajustar concentración → No molestar → Activado
+
+### "Siguiente" y "Anterior"
+Un atajo con una sola acción: **Saltar hacia delante** (o **Saltar hacia atrás**). Controla lo que esté sonando.
 
 ## Batería
 La página es fija: fondo negro, sin animaciones y sin conexiones. El reloj se actualiza una vez por minuto y se para

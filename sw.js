@@ -1,5 +1,5 @@
 // Primero intenta descargar la versión más reciente; si no hay internet, usa la copia guardada.
-const CACHE = 'ipod-v11';
+const CACHE = 'ipod-v12';
 const ARCHIVOS = ['./', 'index.html', 'manifest.json', 'icon.png'];
 
 self.addEventListener('install', e => {
